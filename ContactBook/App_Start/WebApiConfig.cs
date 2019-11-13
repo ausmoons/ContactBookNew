@@ -1,9 +1,5 @@
-﻿using Newtonsoft.Json.Serialization;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Formatting;
-using System.Web.Http;
+﻿using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace ContactBook
 {
@@ -11,6 +7,9 @@ namespace ContactBook
     {
         public static void Register(HttpConfiguration config)
         {
+            config.EnableCors(new EnableCorsAttribute("http://localhost:8080", headers: "*", methods: "*"));
+
+
             config.MapHttpAttributeRoutes();
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",

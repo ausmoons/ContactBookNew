@@ -133,8 +133,8 @@ namespace ContactBook.Controllers.Tests
 
             contact.Name2 = "Updating Name2";
 
-            var updatesContact = controller.UpdateContact(contact);
-            Assert.IsTrue(contact.Name2 != null);
+            var updatesContact = controller.UpdateContact(contact); //jāpārveido, lai notestē ar name2
+            Assert.IsTrue(contact.Name2 == "Updating Name2");
 
         }
 

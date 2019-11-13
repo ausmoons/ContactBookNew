@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -127,8 +126,8 @@ namespace ContactBook.Controllers
         }
 
 
-        [HttpPut]
-        [Route("api/Data/update")]
+        [HttpPost]
+        [Route("api/Data/update/contact")]
         public IHttpActionResult UpdateContact(Contact contact)
         {
             if (!IsValid(contact))
@@ -137,11 +136,11 @@ namespace ContactBook.Controllers
             }
             
             var result =  _contactService.Update(contact);         
-            return Ok();
+            return Ok(result);
 
         }
 
-        [HttpPut]
+        [HttpPost]
         [Route("api/Data/update")]
         public IHttpActionResult UpdateEmail(ICollection<Emails> emails)
         {
@@ -170,10 +169,14 @@ namespace ContactBook.Controllers
             if (birthday != null)
             {
                if( birthday <= DateTime.Now)
-                {
+               {
                     isValid = true;
+               }
+                else
+                {
+                    isValid = false;
                 }
-                isValid = false;
+
             }
             return isValid;
         }
