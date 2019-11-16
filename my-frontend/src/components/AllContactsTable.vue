@@ -10,19 +10,29 @@
         <md-table-cell md-label="Notes">{{ item.notes }}</md-table-cell>
         <md-table-cell md-label="Birthday">{{ item.birthday }}</md-table-cell>
         <md-table-cell md-label="Company">{{ item.company }}</md-table-cell>          
-        <md-table-cell md-label="Email">{{ item.emails }}</md-table-cell> 
-        <md-table-cell md-label="Address">{{ item.addresses }}</md-table-cell> 
-        <md-table-cell md-label="Phone">{{ item.phoneNumbers }}</md-table-cell>        
+        <md-table-cell md-label="Email">{{ emails }}</md-table-cell> 
+        <md-table-cell md-label="Address">{{addresses }}</md-table-cell>     
+        <md-table-cell md-label="Phones">{{ phoneNumbers }}</md-table-cell>             
       </md-table-row>
-    </md-table>     
+    </md-table> 
+     <div>
+      <md-button class="md-raised">Add new contact</md-button>
+      <md-button class="md-raised">Delete contact</md-button>
+      
+    </div>
   </div>
 </template>
+
+
 
 <script>
   export default {
     name: 'TableSingle',
     data: () => ({
-      people: []
+      people: [],
+      emails: [],
+      addresses: [],
+      phoneNumbers: []
     }),
     methods: {
       getClass: ({ id }) => ({
@@ -35,8 +45,27 @@
     },
     created: function() {
         this.$http.get('https://localhost:44366/api/Data/All')
-        .then(function(response){
-            this.people = response.data
+        .then(({data}) => {
+          this.people = data;
+          
+
+          this.emails.forEach(emailAddress => {
+              data.emails.map(({emailAddress}) => emailAddress).join(",");  
+            
+          });  
+         
+          for(var i = 0; i <= this.people.length; i++) {        
+          this.addresses = data[i].addresses.map(({city}) => city).join(",");
+          return this.addresses;
+          };
+
+          for(let i = 0; i <= this.people.length; i++) {        
+          this.phoneNumbers = data[i].phoneNumbers.map(({phoneNumber}) => phoneNumber).join(",")
+          }
+
+          //function formatPersonToView(person){
+            //data.phoneNumbers.map(({phoneNumber}) => phoneNumber).join(",")
+         //}
         })
     }
   }
