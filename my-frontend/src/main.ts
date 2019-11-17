@@ -6,8 +6,9 @@ import AllContactsTable from '../components/AllContactsTable.vue'
 import vueResource from 'vue-resource'
 import VueMaterial from 'vue-material'
 import 'vue-material/dist/vue-material.min.css'
-Vue.use(VueMaterial)
-Vue.use(vueResource)
+import addNewContacts from '../components/AddNewContacts.vue'
+Vue.use(VueMaterial);
+Vue.use(vueResource);
 
 Vue.config.productionTip = false
 
@@ -16,3 +17,4 @@ new Vue({
   store,
   render: h => h(App)
 }).$mount('#app')
+

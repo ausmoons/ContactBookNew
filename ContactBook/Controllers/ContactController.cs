@@ -154,16 +154,32 @@ namespace ContactBook.Controllers
 
         }
 
+       /* [HttpPost]
+        [Route("api/Data/update")]
+        public IHttpActionResult UpdateAddress()
+        {
+        
+
+        }
+
+        [HttpPost]
+        [Route("api/Data/update")]
+        public IHttpActionResult UpdatePhone()
+        {
+           
+
+        }*/
+
 
         public bool IsValid(Contact contact)
         {
             return !string.IsNullOrEmpty(contact.Name1) &&
                      !string.IsNullOrEmpty(contact.Surname1) &&
             IsValidPhone(contact.PhoneNumbers) &&  IsValidAddress(contact.Addresses) &&
-            IsValidEmail(contact.Emails) && ISValidDate(contact.Birthday);
+            IsValidEmail(contact.Emails) && IsValidDate(contact.Birthday);
         }
 
-        private bool ISValidDate(DateTime? birthday)
+        public bool IsValidDate(DateTime? birthday)
         {
             bool isValid = true;
             if (birthday != null)
@@ -196,17 +212,19 @@ namespace ContactBook.Controllers
             return isValid;
         }
 
-        private  bool IsValidAddress(ICollection<Addresses> addresses) //google always return postal code
+        public  bool IsValidAddress(ICollection<Addresses> addresses) //google always return postal code
         {//maybe compare user given postal code with google?
             var street = "";
             var houseNumber = "";
             var city = "";
+            var postalCode = "";
            
            foreach (var item in addresses)
             {
                 street = item.Street;
                 houseNumber = item.HouseNumber;
-                city = item.City;         
+                city = item.City;
+                postalCode = item.PostalCode;
             }
 
             const string url = @"https://maps.googleapis.com/maps/api/geocode/xml?address=Latvija+{city}+{street}+{houseNumber}&key=AIzaSyBhwgkjOOK6Qb6D4eLVk1oROcFMK35UD0E&language=lv";
@@ -217,7 +235,8 @@ namespace ContactBook.Controllers
             var webStream = webResponse.GetResponseStream();
             var responseReader = new StreamReader(webStream);
             var response = responseReader.ReadToEnd();
-
+            //var postalCodeGeocoding = response.
+            Console.WriteLine(response);
 
             responseReader.Close();
 
@@ -225,19 +244,24 @@ namespace ContactBook.Controllers
         }
 
 
-        private bool IsValidPhone(ICollection<PhoneNumbers> phone)
+        public bool IsValidPhone(ICollection<PhoneNumbers> phone)
         {
             bool isValid = true;
-            bool allDigits = true;
-            bool startsWith = true;
-            bool numberLenght = true;
+            
+
             foreach (var phoneNumber in phone)
             {
+
+                bool allDigits = true;
+                bool startsWith = true;
+                bool numberLenght = true;
+
                 foreach (char c in phoneNumber.PhoneNumber)
                 {
                     if (!char.IsDigit(c))
                     {
                         allDigits = false;
+                        break;
                     }
                 }
 
@@ -251,11 +275,15 @@ namespace ContactBook.Controllers
                     numberLenght = false;
                 }
 
-            }
+                if (allDigits == true && startsWith == true && numberLenght == true)
+                {
+                    isValid = true;
+                }
+                else
+                {
+                    isValid = false;
+                } 
 
-            if (allDigits == true && startsWith == true && numberLenght == true)
-            {
-                return isValid = true;
             }
             return isValid;
 

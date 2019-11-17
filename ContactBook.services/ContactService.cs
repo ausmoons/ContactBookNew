@@ -213,6 +213,22 @@ namespace ContactBook
             }
         }
 
+        public async Task UpdateAddressService() 
+        {
+            using (var context = new ContactBookContext())
+            {
+               
+            }
+        }
+
+
+        public async Task UpdatePhoneService()
+        {
+            using (var context = new ContactBookContext())
+            {
+
+            }
+        }
 
 
     }
