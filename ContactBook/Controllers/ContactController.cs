@@ -4,9 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 using ContactBook.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace ContactBook.Controllers
 {
@@ -218,8 +221,8 @@ namespace ContactBook.Controllers
             var houseNumber = "";
             var city = "";
             var postalCode = "";
-           
-           foreach (var item in addresses)
+
+            foreach (var item in addresses)
             {
                 street = item.Street;
                 houseNumber = item.HouseNumber;
@@ -227,22 +230,52 @@ namespace ContactBook.Controllers
                 postalCode = item.PostalCode;
             }
 
-            const string url = @"https://maps.googleapis.com/maps/api/geocode/xml?address=Latvija+{city}+{street}+{houseNumber}&key=AIzaSyBhwgkjOOK6Qb6D4eLVk1oROcFMK35UD0E&language=lv";
+
+             string url = $"https://maps.googleapis.com/maps/api/geocode/json?address=Latvija+{city}+{street}+{houseNumber}&key=AIzaSyBhwgkjOOK6Qb6D4eLVk1oROcFMK35UD0E&language=lv";
+
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = "GET";
-
             var webResponse = request.GetResponse();
             var webStream = webResponse.GetResponseStream();
             var responseReader = new StreamReader(webStream);
             var response = responseReader.ReadToEnd();
-            //var postalCodeGeocoding = response.
-            Console.WriteLine(response);
+
+            DeserializeJson(response); //
+
+            var postalCodeFound = DeserializeJson(response).postal_Code; //
 
             responseReader.Close();
 
             return true;             
         }
 
+
+        private JsonAdressResponseModel DeserializeJson(string response)
+        {
+            var obj = JsonConvert.DeserializeObject<RootObject>(response);
+            List<JsonAdressResponseModel> result = obj.results.Select(x => new JsonAdressResponseModel
+            {
+                address_Components = x.address_components,
+                Status = obj.status,
+                lat = x.geometry.location.lat,
+                lng = x.geometry.location.lng,
+                postal_Code = x.types[5] //
+            }).ToList();
+            if (result.Count == 0)
+                return new JsonAdressResponseModel()
+                {
+                    Status = obj.status
+                };
+            return new JsonAdressResponseModel()
+            {
+                address_Components = result[0].address_Components,
+                Status = obj.status,
+                lat = result[0].lat,
+                lng = result[0].lng,
+                postal_Code = result[0].postal_Code
+
+            };
+        }
 
         public bool IsValidPhone(ICollection<PhoneNumbers> phone)
         {
@@ -265,10 +298,12 @@ namespace ContactBook.Controllers
                     }
                 }
 
-                if (phoneNumber.PhoneNumber[0] != 2)
-                {
-                    startsWith = false;
-                }
+
+                    if (phoneNumber.PhoneNumber[0] != '2')
+                    {
+                        startsWith = false;
+                    }
+                          
 
                 if (phoneNumber.PhoneNumber.Length != 8)
                 {
