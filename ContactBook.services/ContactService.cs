@@ -196,37 +196,55 @@ namespace ContactBook
             }
         }
 
-        public async Task UpdateEmailService(ICollection<Emails> emails) //kā paņemt pareizo e-pasta id
+        public async Task UpdateEmailService(ICollection<Emails> email, int EmailID) //kā paņemt pareizo e-pasta id
         {
             using (var context = new ContactBookContext())
             {
-                Emails updateEmailId = new Emails();                
-                var updateEmail = await context.Contacts.FindAsync(updateEmailId.EmailID);
+                //Emails updateEmailId = new Emails();                
+                var updateEmail = await context.Contacts.FindAsync(EmailID);//
 
                 if (updateEmail == null)
                 {
                     return;
                 }
 
-                context.Entry(updateEmail).CurrentValues.SetValues(emails);
+                context.Entry(updateEmail).CurrentValues.SetValues(email);
                 await context.SaveChangesAsync();
             }
         }
 
-        public async Task UpdateAddressService() 
+        public async Task UpdateAddressService(ICollection<Addresses> address, int addressID) //
         {
             using (var context = new ContactBookContext())
             {
-               
+              
+                var updateAddress = await context.Contacts.FindAsync(addressID);
+
+                if (updateAddress == null)
+                {
+                    return;
+                }
+
+                context.Entry(updateAddress).CurrentValues.SetValues(address);
+                await context.SaveChangesAsync();
             }
         }
 
 
-        public async Task UpdatePhoneService()
+        public async Task UpdatePhoneService(ICollection<PhoneNumbers> phoneNumber, int phoneNumberID)//
         {
             using (var context = new ContactBookContext())
             {
+               
+                var updatephoneNumber = await context.Contacts.FindAsync(phoneNumberID);
 
+                if (updatephoneNumber == null)
+                {
+                    return;
+                }
+
+                context.Entry(updatephoneNumber).CurrentValues.SetValues(phoneNumber);
+                await context.SaveChangesAsync();
             }
         }
 

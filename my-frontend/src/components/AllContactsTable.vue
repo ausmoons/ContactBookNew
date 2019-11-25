@@ -1,5 +1,6 @@
 <template>
   <div>
+    
     <md-table v-model="people" md-card @md-selected="onSelect">
       <md-table-row slot="md-table-row" slot-scope="{ item }" :class="getClass(item)" md-selectable="single" @md-selected="onSelect">
         <md-table-cell md-label="ID" md-numeric>{{ item.id }}</md-table-cell>

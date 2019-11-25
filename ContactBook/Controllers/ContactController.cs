@@ -145,33 +145,45 @@ namespace ContactBook.Controllers
 
         [HttpPost]
         [Route("api/Data/update")]
-        public IHttpActionResult UpdateEmail(ICollection<Emails> emails)
+        public IHttpActionResult UpdateEmail(ICollection<Emails> email, int EmailID)
         {
-            if (!IsValidEmail(emails))
+            if (!IsValidEmail(email))
             {
                 return BadRequest();
             }
 
-            var result = _contactService.UpdateEmailService(emails);
-            return Ok();
-
-        }
-
-       /* [HttpPost]
-        [Route("api/Data/update")]
-        public IHttpActionResult UpdateAddress()
-        {
-        
+            var result = _contactService.UpdateEmailService(email, EmailID); //
+            return Ok(result);
 
         }
 
         [HttpPost]
         [Route("api/Data/update")]
-        public IHttpActionResult UpdatePhone()
+        public IHttpActionResult UpdateAddress(ICollection<Addresses> address, int addressID)
         {
-           
+            if (!IsValidAddress(address))
+            {
+                return BadRequest();
+            }
 
-        }*/
+            var result = _contactService.UpdateAddressService(address, addressID);
+            return Ok(result);
+
+        }
+
+        [HttpPost]
+        [Route("api/Data/update")]
+        public IHttpActionResult UpdatePhone(ICollection<PhoneNumbers> phoneNumber, int phoneNumberID)
+        {
+            if (!IsValidPhone(phoneNumber))
+            {
+                return BadRequest();
+            }
+
+            var result = _contactService.UpdatePhoneService(phoneNumber, phoneNumberID);
+            return Ok(result);
+
+        }
 
 
         public bool IsValid(Contact contact)
@@ -215,12 +227,13 @@ namespace ContactBook.Controllers
             return isValid;
         }
 
-        public  bool IsValidAddress(ICollection<Addresses> addresses) //google always return postal code
-        {//maybe compare user given postal code with google?
+        public  bool IsValidAddress(ICollection<Addresses> addresses) 
+        {
             var street = "";
             var houseNumber = "";
             var city = "";
             var postalCode = "";
+            bool isValid = true;
 
             foreach (var item in addresses)
             {
@@ -240,17 +253,27 @@ namespace ContactBook.Controllers
             var responseReader = new StreamReader(webStream);
             var response = responseReader.ReadToEnd();
 
-            DeserializeJson(response); //
+            DeserializeJson(response); 
 
-            var postalCodeFound = DeserializeJson(response).postal_Code; //
+            var postalCodeFound = DeserializeJson(response).postal_Code;
+
+            var postalCodeNumbers = String.Join("", postalCode.Where(char.IsDigit));
+            if (postalCodeFound != postalCodeNumbers)
+            {
+                isValid = false;
+            }
+            else
+            {
+                isValid = true;
+            }
 
             responseReader.Close();
 
-            return true;             
+            return isValid;             
         }
 
 
-        private JsonAdressResponseModel DeserializeJson(string response)
+        private JsonAdressResponseModel DeserializeJson(string response)//
         {
             var obj = JsonConvert.DeserializeObject<RootObject>(response);
             List<JsonAdressResponseModel> result = obj.results.Select(x => new JsonAdressResponseModel
@@ -259,7 +282,7 @@ namespace ContactBook.Controllers
                 Status = obj.status,
                 lat = x.geometry.location.lat,
                 lng = x.geometry.location.lng,
-                postal_Code = x.types[5] //
+                postal_Code = x.address_components[5].long_name
             }).ToList();
             if (result.Count == 0)
                 return new JsonAdressResponseModel()
@@ -272,7 +295,7 @@ namespace ContactBook.Controllers
                 Status = obj.status,
                 lat = result[0].lat,
                 lng = result[0].lng,
-                postal_Code = result[0].postal_Code
+                postal_Code = result[0].address_Components[5].long_name,
 
             };
         }
