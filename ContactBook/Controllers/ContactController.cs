@@ -22,7 +22,7 @@ namespace ContactBook.Controllers
 
 
         [HttpGet]
-        [Route("api/Data/id/{id}")]
+        [Route("api/Contact/{id}")]
         public async Task<HttpResponseMessage> GetById(HttpRequestMessage request, int id)
         {
             var contact = await _contactService.FindContactById(id);
@@ -35,7 +35,7 @@ namespace ContactBook.Controllers
         }
 
         [HttpGet]
-        [Route("api/Data/name/{name1}")]
+        [Route("api/Contact/{name1}")]
         public async Task<HttpResponseMessage> GetByName1(HttpRequestMessage request, string name1)
         {
             var contact = await _contactService.FindContactByName1(name1);
@@ -48,7 +48,7 @@ namespace ContactBook.Controllers
         }
 
         [HttpGet]
-        [Route("api/Data/surname/{surname1}")]
+        [Route("api/Contact/{surname1}")]
         public async Task<HttpResponseMessage> GetBySurname1(HttpRequestMessage request, string surname1)
         {
             var contact = await _contactService.FindContactBySurname1(surname1);
@@ -60,7 +60,7 @@ namespace ContactBook.Controllers
             return request.CreateResponse(HttpStatusCode.OK, contact);
         }
         [HttpGet]
-        [Route("api/Data/company/{company}")]
+        [Route("api/Contact/{company}")]
         public async Task<HttpResponseMessage> GetByCompany(HttpRequestMessage request, string company)
         {
             var contact = await _contactService.FindContactByCompany(company);
@@ -72,7 +72,7 @@ namespace ContactBook.Controllers
             return request.CreateResponse(HttpStatusCode.OK, contact);
         }
         [HttpGet]
-        [Route("api/Data/phoneNumber/{phoneNumber}")]
+        [Route("api/Contact/{phoneNumber}")]
         public async Task<HttpResponseMessage> GetByPhoneNmber(HttpRequestMessage request, string phoneNumber)
         {
             var contact = await _contactService.FindContactByPhone(phoneNumber);
@@ -85,7 +85,7 @@ namespace ContactBook.Controllers
         }
 
         [HttpGet]
-        [Route("api/Data/email/{email}")]
+        [Route("api/Contact/email/{email}")]
         public async Task<HttpResponseMessage> GetByEmail(HttpRequestMessage request, string email)
         {
             var contact = await _contactService.FindContactByEmail(email);
@@ -100,7 +100,7 @@ namespace ContactBook.Controllers
 
 
         [HttpGet]
-        [Route("api/Data/All")]
+        [Route("api/Contact/All")]
         public async Task<IHttpActionResult> GetAllContacts()
         {
             var contacts = await _contactService.FindAllContacts();
@@ -110,7 +110,7 @@ namespace ContactBook.Controllers
 
         
         [HttpPost]
-        [Route("api/Data")]
+        [Route("api/Contact")]
         public IHttpActionResult AddContact(Contact contact)
         {
             if (!IsValid(contact))
@@ -130,7 +130,7 @@ namespace ContactBook.Controllers
 
 
         [HttpPost]
-        [Route("api/Data/update/contact")]
+        [Route("api/Contact/update")]
         public IHttpActionResult UpdateContact(Contact contact)
         {
             if (!IsValid(contact))
@@ -144,7 +144,7 @@ namespace ContactBook.Controllers
         }
 
         [HttpPost]
-        [Route("api/Data/update")]
+        [Route("api/Contact/update")]
         public IHttpActionResult UpdateEmail(ICollection<Emails> email, int EmailID)
         {
             if (!IsValidEmail(email))
@@ -158,7 +158,7 @@ namespace ContactBook.Controllers
         }
 
         [HttpPost]
-        [Route("api/Data/update")]
+        [Route("api/Contact/update")]
         public IHttpActionResult UpdateAddress(ICollection<Addresses> address, int addressID)
         {
             if (!IsValidAddress(address))
@@ -172,7 +172,7 @@ namespace ContactBook.Controllers
         }
 
         [HttpPost]
-        [Route("api/Data/update")]
+        [Route("api/Contact/update")]
         public IHttpActionResult UpdatePhone(ICollection<PhoneNumbers> phoneNumber, int phoneNumberID)
         {
             if (!IsValidPhone(phoneNumber))
@@ -348,7 +348,7 @@ namespace ContactBook.Controllers
         }
 
         [HttpDelete]
-        [Route("api/Data/{id}")]
+        [Route("api/Contact/Delete/{id}")]
         public async Task<HttpResponseMessage> DeleteByID(HttpRequestMessage request, int id)
         {
 
@@ -357,7 +357,7 @@ namespace ContactBook.Controllers
         }
 
         [HttpDelete]
-        [Route("api/Data/name/{name1}")]
+        [Route("api/Contact/name/{name1}")]
         public async Task<HttpResponseMessage> DeleteByName1(HttpRequestMessage request, string name1)
         {
             await _contactService.RemoveContactByName1(name1);
@@ -365,7 +365,7 @@ namespace ContactBook.Controllers
         }
 
         [HttpDelete]
-        [Route("api/Data/surname/{surname1}")]
+        [Route("api/Contact/surname/{surname1}")]
         public async Task<HttpResponseMessage> DeleteBySurname1(HttpRequestMessage request, string surname1)
         {
             await _contactService.RemoveContactBySurname1(surname1);
@@ -373,7 +373,7 @@ namespace ContactBook.Controllers
         }
 
         [HttpDelete]
-        [Route("api/Data/deleteAll")]
+        [Route("api/Contact/deleteAll")]
         public async Task<bool> Clear()
         {
             await _contactService.DeleteAllContacts();
