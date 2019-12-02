@@ -22,7 +22,7 @@ namespace ContactBook.Controllers
 
 
         [HttpGet]
-        [Route("api/Contact/{id}")]
+        [Route("api/Contact/id/{id}")]
         public async Task<HttpResponseMessage> GetById(HttpRequestMessage request, int id)
         {
             var contact = await _contactService.FindContactById(id);
@@ -129,9 +129,9 @@ namespace ContactBook.Controllers
         }
 
 
-        [HttpPost]
-        [Route("api/Contact/update")]
-        public IHttpActionResult UpdateContact(Contact contact)
+        [HttpPut]
+        [Route("api/Contact/update/id/{id}")]
+        public IHttpActionResult UpdateContact(Contact contact, int id)
         {
             if (!IsValid(contact))
             {
@@ -235,69 +235,77 @@ namespace ContactBook.Controllers
             var postalCode = "";
             bool isValid = true;
 
-            foreach (var item in addresses)
+
+
+                foreach (var item in addresses)
+                {
+                    street = item.Street;
+                    houseNumber = item.HouseNumber;
+                    city = item.City;
+                    postalCode = item.PostalCode;
+                }
+
+            if (!string.IsNullOrEmpty(street) && !string.IsNullOrEmpty(houseNumber) && !string.IsNullOrEmpty(city) && !string.IsNullOrEmpty(street))
             {
-                street = item.Street;
-                houseNumber = item.HouseNumber;
-                city = item.City;
-                postalCode = item.PostalCode;
+
+                string url = $"https://maps.googleapis.com/maps/api/geocode/json?address=Latvija+{city}+{street}+{houseNumber}&key=AIzaSyBhwgkjOOK6Qb6D4eLVk1oROcFMK35UD0E&language=lv";
+
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                request.Method = "GET";
+                var webResponse = request.GetResponse();
+                var webStream = webResponse.GetResponseStream();
+                var responseReader = new StreamReader(webStream);
+                var response = responseReader.ReadToEnd();
+
+                DeserializeJson(response);
+
+                var postalCodeFound = DeserializeJson(response).postal_Code;
+
+                var postalCodeNumbers = String.Join("", postalCode.Where(char.IsDigit));
+                if (postalCodeFound != postalCodeNumbers)
+                {
+                    isValid = false;
+                }
+                else
+                {
+                    isValid = true;
+                }
+
+                responseReader.Close();
+
             }
-
-
-             string url = $"https://maps.googleapis.com/maps/api/geocode/json?address=Latvija+{city}+{street}+{houseNumber}&key=AIzaSyBhwgkjOOK6Qb6D4eLVk1oROcFMK35UD0E&language=lv";
-
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.Method = "GET";
-            var webResponse = request.GetResponse();
-            var webStream = webResponse.GetResponseStream();
-            var responseReader = new StreamReader(webStream);
-            var response = responseReader.ReadToEnd();
-
-            DeserializeJson(response); 
-
-            var postalCodeFound = DeserializeJson(response).postal_Code;
-
-            var postalCodeNumbers = String.Join("", postalCode.Where(char.IsDigit));
-            if (postalCodeFound != postalCodeNumbers)
-            {
-                isValid = false;
-            }
-            else
-            {
-                isValid = true;
-            }
-
-            responseReader.Close();
-
             return isValid;             
         }
 
 
         private JsonAdressResponseModel DeserializeJson(string response)//
         {
-            var obj = JsonConvert.DeserializeObject<RootObject>(response);
-            List<JsonAdressResponseModel> result = obj.results.Select(x => new JsonAdressResponseModel
-            {
-                address_Components = x.address_components,
-                Status = obj.status,
-                lat = x.geometry.location.lat,
-                lng = x.geometry.location.lng,
-                postal_Code = x.address_components[5].long_name
-            }).ToList();
-            if (result.Count == 0)
+            
+
+                var obj = JsonConvert.DeserializeObject<RootObject>(response);
+                List<JsonAdressResponseModel> result = obj.results.Select(x => new JsonAdressResponseModel
+                {
+                    address_Components = x.address_components,
+                    Status = obj.status,
+                    lat = x.geometry.location.lat,
+                    lng = x.geometry.location.lng,
+                    postal_Code = x.address_components[5].long_name
+                }).ToList();
+                if (result.Count == 0)
+                    return new JsonAdressResponseModel()
+                    {
+                        Status = obj.status
+                    };
                 return new JsonAdressResponseModel()
                 {
-                    Status = obj.status
-                };
-            return new JsonAdressResponseModel()
-            {
-                address_Components = result[0].address_Components,
-                Status = obj.status,
-                lat = result[0].lat,
-                lng = result[0].lng,
-                postal_Code = result[0].address_Components[5].long_name,
+                    address_Components = result[0].address_Components,
+                    Status = obj.status,
+                    lat = result[0].lat,
+                    lng = result[0].lng,
+                    postal_Code = result[0].address_Components[5].long_name,
 
-            };
+                };
+            
         }
 
         public bool IsValidPhone(ICollection<PhoneNumbers> phone)
@@ -348,13 +356,33 @@ namespace ContactBook.Controllers
         }
 
         [HttpDelete]
-        [Route("api/Contact/Delete/{id}")]
-        public async Task<HttpResponseMessage> DeleteByID(HttpRequestMessage request, int id)
+        [Route("api/Contact/Delete/id/{id}")]
+        public async Task<IHttpActionResult> DeleteByID(int id)
         {
 
-            await _contactService.RemoveContactById(id);
-            return request.CreateResponse(HttpStatusCode.OK);
+           var result = await _contactService.RemoveContactById(id);
+            if (!result)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok();
+            }
         }
+
+ 
+
+
+
+        [HttpDelete]
+        [Route("api/Contact/deleteAll")]
+        public async Task<bool> Clear()
+        {
+            await _contactService.DeleteAllContacts();
+            return true;
+        }
+
 
         [HttpDelete]
         [Route("api/Contact/name/{name1}")]
@@ -372,12 +400,6 @@ namespace ContactBook.Controllers
             return request.CreateResponse(HttpStatusCode.OK);
         }
 
-        [HttpDelete]
-        [Route("api/Contact/deleteAll")]
-        public async Task<bool> Clear()
-        {
-            await _contactService.DeleteAllContacts();
-            return true;
-        }
+        
     }
 }

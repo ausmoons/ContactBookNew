@@ -2,8 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Contact from '../components/Contacts.vue'
 import Add from '../components/Add.vue'
-//import Edit from '../components/Edit.vue'
-//import ContactDetails from '../components/ContactDetails.vue'
+import Edit from '../components/Edit.vue'
+import ContactDetails from '../components/ContactDetails.vue'
 
 Vue.use(VueRouter)
 
@@ -17,14 +17,14 @@ const routes = [
     name: 'newContacts', 
     component: Add
   },
- /**  { path: '/edit/:id',
+   { path: '/update/id/:id',
     name:  'edit',
     component: Edit
   },
-  { path: '/contactDetails/:id',
+   { path: '/contactDetails/id/:id',
     name: 'contactDetails',
     component: ContactDetails
-  }, */
+  }, 
 
 ]
 

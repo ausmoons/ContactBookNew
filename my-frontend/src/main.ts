@@ -1,14 +1,19 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
-import store from './store'
-import AllContactsTable from '../components/AllContactsTable.vue'
-import vueResource from 'vue-resource'
+
+
 import VueMaterial from 'vue-material'
 import 'vue-material/dist/vue-material.min.css'
-import addNewContacts from '../components/AddNewContacts.vue'
+
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+    
+Vue.use(VueAxios, axios)
+
+
 Vue.use(VueMaterial);
-Vue.use(vueResource);
+
 
 Vue.config.productionTip = false
 

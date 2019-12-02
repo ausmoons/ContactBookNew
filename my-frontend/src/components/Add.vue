@@ -1,8 +1,7 @@
 <template>
   <div class="add container">
-    <Alert v-if="alert" v-bind:message="alert" />
     <h1 class="page-header">Add Contact</h1>
-    <form v-on:submit="addContact">
+    <form @submit="formSubmit">
         <div class="well">
             <h4>Contact Info</h4>
             <div class="form-group">
@@ -14,6 +13,8 @@
                 <input type="text" class="form-control" placeholder="surname1" v-model="surname1">
             </div>
         </div>
+
+
         <div class="well">
             <h4>Contact info</h4>
             <div class="form-group">
@@ -52,81 +53,75 @@
                 <label>Postal code</label>
                 <input type="text" class="form-control" placeholder="postalCode" v-model="addresses.postalCode">
             </div>
-        </div>
+        </div>  
+
+
+
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
   </div>
 </template>
 
 <script>
-    import Alert from './Alert'
+
+    import axios from 'axios';
+
     export default {
-    name: 'add',
-    data () {
-        return {
-            contacts: [],
-            name1: '',
-            surname1: '',
-            phone: '',
-            addresses: {
+          mounted() {
+              console.log('Component mounted.')
+          },
+          data() {
+              return {
+                name1: '',
+                surname1: '',
+                addresses: [{
                 city : '',
                 street: '',
                 houseNumber: '',
                 postalCode: '',
-                }, 
-            phoneNumbers: {
+                }], 
+            phoneNumbers: [{
                 phoneNumber: '',
                 type: '',
-                 }, 
-            emails: {
+                 }], 
+            emails: [{
                 emailAddress:'',
                 type: '',
-                }, 
-        alert:''
-        }
-    },
-    methods: {
-        addContact(e){
-            if(!this.name1 || !this.surname1){
-                this.alert = 'Please fill in all required fields';
-            } else {
-                let newContact = [{
-                    name1: this.name1,
-                    surname1: this.surname1,
-                    phone: this.phoneNumbers.phoneNumber,
-                    addresses: {
+                }],
+              };
+          },
+    
+      methods: {
+              formSubmit(e) {
+                  e.preventDefault();
+                  let currentObj = this;
+                  axios.post('https://localhost:44366/api/Contact', {
+                      name1: this.name1,
+                      surname1: this.surname1,
+                      addresses: [{
                         city : this.addresses.city,
                         street: this.addresses.street,
                         houseNumber: this.addresses.houseNumber,
                         postalCode: this.addresses.postalCode,
-                      }, 
-                    phoneNumbers: {
+                      }], 
+                    phoneNumbers: [{
                         phoneNumber: this.phoneNumbers.phoneNumber,
                         type: this.phoneNumbers.type,
-                      }, 
-                     
-
-                     emails: {
+                      }], 
+                     emails: [{
                         emailAddress: this.emails.emailAddress,
                         type: this.emails.type,
-                      }, 
+                      }], 
 
-                }]
-
-                this.$http.post('http://localhost:44366/api/Contact', newContact)
-                    .then(function(response){
-                        this.$router.push({path: '/', query: {alert: 'Contact Added'}});
-                    });
-
-                e.preventDefault();
-            }
-            e.preventDefault();
-        }
-    },
-    components: {
-        Alert
-    }
-    }
+                  })
+                  .then(function (response) {
+                      currentObj.output = response.data;
+                      console.log(response.message);
+                  });
+                  
+              }
+          }
+      }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

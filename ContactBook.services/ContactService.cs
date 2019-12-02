@@ -121,7 +121,7 @@ namespace ContactBook
         }
 
 
-        public async Task RemoveContactById(int id)
+        public async Task<bool> RemoveContactById(int id)
         {
             using (var context = new ContactBookContext())
             {
@@ -132,8 +132,24 @@ namespace ContactBook
                 {
                     context.Contacts.Remove(contact);
                     await context.SaveChangesAsync();
-                }
+                    return true;
 
+                }
+                else
+                {
+                    return false;
+                }
+    
+
+            }
+        }
+
+        public async Task DeleteAllContacts()
+        {
+            using (var context = new ContactBookContext())
+            {
+                context.Contacts.RemoveRange(context.Contacts);
+                await context.SaveChangesAsync();
             }
         }
 
@@ -169,14 +185,7 @@ namespace ContactBook
             }
         }
 
-        public async Task DeleteAllContacts()
-        {
-            using (var context = new ContactBookContext())
-            {
-                context.Contacts.RemoveRange(context.Contacts);
-                await context.SaveChangesAsync();
-            }
-        }
+        
 
        
         public async Task Update(Contact contact)

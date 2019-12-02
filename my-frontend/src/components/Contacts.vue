@@ -23,8 +23,7 @@
             <td>{{contact.emails}}</td>
             <td>{{contact.phoneNumbers}}</td>
             <td>{{contact.addresses}}</td>
-            
-            <td><router-link class="btn btn-default" v-bind:to="'contact'+contact.id">View</router-link></td>
+            <td><router-link class="btn btn-default" v-bind:to="'/contactDetails/id/'+contact.id">View</router-link></td>
           </tr>
         </tbody> 
     </table>
@@ -43,6 +42,7 @@
 
 <script>
   import Alert from './Alert';
+  import axios from 'axios';
   export default {
     name: 'contacts',
     data: () => ({
@@ -52,9 +52,7 @@
     }),
     methods: {
       fetchContacts(){
-
-        
-        this.$http.get('https://localhost:44366/api/Contact/All')
+       this.axios.get('https://localhost:44366/api/Contact/All')
           .then(({data}) => {
           this.contacts = data.map(contact => {
 
