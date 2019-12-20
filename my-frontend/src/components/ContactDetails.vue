@@ -1,49 +1,89 @@
 <template>
 
-  <div class="contacts container">
- 
+  <div>
     <h1 class="page-header">Contact details</h1>
-    <br />
+    <md-list class="md-double-line">
 
-    <span class="pull-right">
-            <router-link class="btn btn-primary" v-bind:to="'/edit/'+contacts.id">Edit</router-link>
-            <button class="btn btn-danger" v-on:click="deleteContact(id)">Delete</button>
-    </span>
+        <md-card-media>
+          <img src="https://sm.pcmag.com/pcmag_in/feature/g/get-organi/get-organized-update-your-profile-picture_9acz.jpg" alt="People">
+        </md-card-media>
 
-    <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Phone number</th>
-            <th>Phone type</th>
-          </tr>          
-        </thead>
+      <md-subheader>Personal details</md-subheader>
+      <md-list-item>
+        <div class="md-list-item-text">
+          <span>Name: {{contacts.name1}}</span>
+              <input type="text" v-model="contacts.name1" :disabled="!isEditing"
+           :class="{view: !isEditing}">
+          <span>Second Name: {{contacts.name2}}</span>
+          <span>Surname: {{contacts.surname1}}</span>
+          <span>Second surname: {{contacts.surname2}}</span>
+          <span>Birthday: {{contacts.birthday}}</span>
+        </div>
+      </md-list-item>
 
-        <tbody>
-          <tr >
-            <td>{{contacts.name1}}</td>
-            <td>{{contacts.surname1}}</td>
+      <md-divider></md-divider>
 
-            <tr v-for="item in contacts.phoneNumbers" :key="item.PhoneNumberID">
-              <td>{{item.phoneNumber}}</td>
-              <td>{{item.type}}</td>      
-         </tr>
-      </tbody>
+
+
+      <md-subheader>Email</md-subheader>
+      <md-list-item>
+        <div class="md-list-item-text" v-for="item in contacts.emails" :key="item.emailID">
+          <span>{{item.emailAddress}}</span>
+          <span>{{item.type}}</span>
+        </div>
+      </md-list-item>
+
+      <md-divider></md-divider>
+
+      <md-subheader>Phone</md-subheader>
+      <md-list-item>
+        <div class="md-list-item-text" v-for="item in contacts.phoneNumbers" :key="item.PhoneNumberID">
+          <span>{{item.phoneNumber}}</span>
+          <span>{{item.type}}</span>
+        </div>
+      </md-list-item>
+
+      <md-divider></md-divider>
+
+      <md-subheader>Address</md-subheader>
+      <md-list-item>
+        <div class="md-list-item-text" v-for="item in contacts.addresses" :key="item.AddressID">
+          <span>City: {{item.city}}</span>
+          <span>Street: {{item.street}}</span>
+          <span>House number: {{item.houseNumber}}</span>
+          <span>Postal code: {{item.postalCode}}</span>
+        </div>
+      </md-list-item>
+
+ <md-divider></md-divider>
+
+      <md-subheader>Additional information</md-subheader>
+      <md-list-item>
+        <div class="md-list-item-text">
+         <span>Notes: {{contacts.notes}}</span>
+         <span>Company: {{contacts.company}}</span>
+        </div>
+      </md-list-item>
+
      
+<md-card-actions>
+        <md-button><router-link class="btn btn-primary" v-bind:to="'/edit/id/'+contacts.id">Edit</router-link></md-button>
+        <md-button class="btn btn-danger" v-on:click="deleteContact(id)">Delete</md-button>
+      </md-card-actions>
 
-    </table>
-  </div>
+    </md-list>
+    
 
+</div>
 </template>
 
 <script>
-  import Alert from './Alert';
   import axios from 'axios';
   export default {
     name: 'contacts',
-    data () {
+    data () {      
     return {
+      isEditing: false,
       id: 0,
       contacts: []
     }
@@ -70,14 +110,16 @@ methods: {
     });
   }
 }
-
-
-    
-   
+ 
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-
+<style lang="scss" scoped>
+  .md-list {
+    width: 320px;
+    max-width: 100%;
+    display: inline-block;
+    vertical-align: top;
+    border: 1px solid rgba(#000, .12);
+  }
 </style>

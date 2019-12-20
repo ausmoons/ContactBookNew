@@ -17,7 +17,7 @@ const routes = [
     name: 'newContacts', 
     component: Add
   },
-   { path: '/update/id/:id',
+   { path: '/edit/id/:id',
     name:  'edit',
     component: Edit
   },

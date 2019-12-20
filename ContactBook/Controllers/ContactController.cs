@@ -131,15 +131,27 @@ namespace ContactBook.Controllers
 
         [HttpPut]
         [Route("api/Contact/update/id/{id}")]
-        public IHttpActionResult UpdateContact(Contact contact, int id)
+        public IHttpActionResult UpdateContact(int id, Contact contact)
         {
-            if (!IsValid(contact))
+
+            var contactToUpdate = _contactService.FindContactById(id);
+
+            if (contactToUpdate == null)
             {
                 return BadRequest();
             }
+            else
+            {
+                var result = _contactService.Update(id, contact);
+                if (!result.Succeeded)
+                {
+                    return Conflict();
+                }
+                contact.Id = result.Id;
+                return Created(string.Empty, contact);
+            }
             
-            var result =  _contactService.Update(contact);         
-            return Ok(result);
+            
 
         }
 

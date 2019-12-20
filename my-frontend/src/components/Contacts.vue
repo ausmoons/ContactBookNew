@@ -2,42 +2,41 @@
 
   <div class="contacts container">
     <Alert v-if="alert" v-bind:message="alert" />
-    <h1 class="page-header">Manage Contacts</h1>
+    <h1 class="page-header">Contacts</h1>
     <input class="form-control" placeholder="Enter Last Name" v-model="filterInput">
     <br />
-    <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>Address</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="contact in contacts" :key="contact.id">
-            <td>{{contact.name1}}</td>
-            <td>{{contact.surname1}}</td>
-            <td>{{contact.emails}}</td>
-            <td>{{contact.phoneNumbers}}</td>
-            <td>{{contact.addresses}}</td>
-            <td><router-link class="btn btn-default" v-bind:to="'/contactDetails/id/'+contact.id">View</router-link></td>
-          </tr>
-        </tbody> 
-    </table>
+
+  <div  v-for="contact in contacts" :key="contact.id">  
+    <md-card  md-with-hover>
+      <md-card-header>
+        <md-card-header-text>
+          <div class="md-title">{{contact.name1}} {{contact.surname1}} </div>
+           <div class="md-subhead">{{contact.emails}}</div>
+           <div class="md-subhead">{{contact.phoneNumbers}}</div>
+
+        </md-card-header-text>
+
+
+        <md-card-media>
+          <img src="https://sm.pcmag.com/pcmag_in/feature/g/get-organi/get-organized-update-your-profile-picture_9acz.jpg" alt="People">
+        </md-card-media>
+      </md-card-header>
+
+      <md-card-actions>
+        <md-button><router-link class="btn btn-default" v-bind:to="'/contactDetails/id/'+contact.id">View</router-link></md-button>
+      </md-card-actions>
+    </md-card>
+</div>
 
       <div class="container">
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li><router-link to="/add">Add Contact</router-link></li>
+            <md-button><router-link class="btn btn-default" to="/add">Add Contact</router-link></md-button>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
  
   </div>
-
 </template>
 
 <script>
@@ -69,9 +68,9 @@
             return contact;
           });
         });
-      }
-    },
-    created: function(){
+    }
+  },
+   created: function(){
       if(this.$route.query.alert){
         this.alert = this.$route.query.alert;
       }
@@ -84,9 +83,17 @@
       Alert
     }
   }
+    
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
 
+<style lang="scss" scoped>
+  .md-card {
+    width: 320px;
+    margin: 4px;
+    display: inline-block;
+    vertical-align: top;
+  }
 </style>
+

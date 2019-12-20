@@ -92,8 +92,7 @@ namespace ContactBook
             }
         }
 
-
-        public ServiceResult AddContact (Contact contact)
+        public ServiceResult AddContact(Contact contact)
         {
             using (var context = new ContactBookContext())
             {
@@ -107,6 +106,22 @@ namespace ContactBook
                     context.SaveChanges();
                     return new ServiceResult(contact.Id, true);
                 }
+            }
+        }
+
+        public ServiceResult Update(int id, Contact contact)
+        {
+            using (var context = new ContactBookContext())
+            {
+                var updateContact = context.Contacts.Include(f => f.Addresses).Include(f => f.PhoneNumbers).Include(f => f.Emails).SingleOrDefault(x => x.Id == id);
+
+
+                  context.Entry(updateContact).CurrentValues.SetValues(contact);
+                  context.SaveChanges();
+                  return new ServiceResult(id, true);
+                
+
+               
             }
         }
 
@@ -188,52 +203,29 @@ namespace ContactBook
         
 
        
-        public async Task Update(Contact contact)
+
+
+        public async Task UpdateEmailService(ICollection<Emails> email, int emailID) 
         {
             using (var context = new ContactBookContext())
             {
-
-                var updateContact = await context.Contacts.FindAsync(contact.Id);
-                   
-                if (updateContact == null)
-                {
-                    return;
-                }
-
-                context.Entry(updateContact).CurrentValues.SetValues(contact);
-                await context.SaveChangesAsync();
-            }
-        }
-
-        public async Task UpdateEmailService(ICollection<Emails> email, int EmailID) //kā paņemt pareizo e-pasta id
-        {
-            using (var context = new ContactBookContext())
-            {
-                //Emails updateEmailId = new Emails();                
-                var updateEmail = await context.Contacts.FindAsync(EmailID);//
-
-                if (updateEmail == null)
-                {
-                    return;
-                }
-
+              
+                var updateEmail = await context.Contacts.Include(f => f.Addresses).Include(f => f.PhoneNumbers).Include(f => f.Emails).SingleOrDefaultAsync(x => x.Emails.Any(t => t.EmailID == emailID));
                 context.Entry(updateEmail).CurrentValues.SetValues(email);
                 await context.SaveChangesAsync();
             }
         }
 
-        public async Task UpdateAddressService(ICollection<Addresses> address, int addressID) //
+
+
+
+
+public async Task UpdateAddressService(ICollection<Addresses> address, int addressID) //
         {
             using (var context = new ContactBookContext())
             {
               
-                var updateAddress = await context.Contacts.FindAsync(addressID);
-
-                if (updateAddress == null)
-                {
-                    return;
-                }
-
+                var updateAddress = await context.Contacts.Include(f => f.Addresses).Include(f => f.PhoneNumbers).Include(f => f.Emails).SingleOrDefaultAsync(x => x.Addresses.Any(t => t.AddressID == addressID));
                 context.Entry(updateAddress).CurrentValues.SetValues(address);
                 await context.SaveChangesAsync();
             }
