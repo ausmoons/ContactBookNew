@@ -53,11 +53,29 @@
                 <label>Postal code</label>
                 <input type="text" class="form-control" placeholder="postalCode" v-model="addresses.postalCode">
             </div>
-        </div>  
+        </div> 
+        
+<md-dialog-alert
+      :md-active.sync="saved"
+      md-content="Your contact has been saved!"
+      md-confirm-text="Ok" />
+
+      <md-dialog-alert
+      :md-active.sync="cancel"
+      md-content="Your contact has not been saved!"
+      md-confirm-text="Ok" />
 
 
 
-        <button type="submit" class="btn btn-primary">Submit</button>
+<md-card-actions>
+        <md-button v-on:click="cancel = true" ><router-link class="btn btn-primary" v-bind:to="'/'">Cancel</router-link></md-button>
+         <md-button type="submit" v-on:click="saved = true" class="btn btn-primary">Submit</md-button>
+</md-card-actions>
+
+
+
+
+       
     </form>
   </div>
 </template>
@@ -72,6 +90,8 @@
           },
           data() {
               return {
+                saved: false,
+                cancel: false,
                 name1: '',
                 surname1: '',
                 addresses: [{

@@ -5,12 +5,32 @@
     <md-list class="md-double-line">
 
         <md-card-media>
-          <img src="https://sm.pcmag.com/pcmag_in/feature/g/get-organi/get-organized-update-your-profile-picture_9acz.jpg" alt="People">
+          <img v-if="contacts.photo">
+          <img v-else: src="https://sm.pcmag.com/pcmag_in/feature/g/get-organi/get-organized-update-your-profile-picture_9acz.jpg" alt="People" >
                 <md-field :disabled="!isEditing" :class="{view: !isEditing}" v-if="isEditing">
                     <label>Profile picture</label>
-                    <md-file v-model="contacts.photo" accept="image/*" />
+                    <md-file v-model="contacts.photo" accept="image/*"  :disabled="!isEditing" :class="{view: !isEditing}"/>
                </md-field>
         </md-card-media>
+
+<md-card-media>
+       <picture-input 
+      ref="pictureInput"
+      v-model="contacts.photo"
+      accept="image/jpeg,image/png" 
+      button-class="btn"
+      :disabled="!isEditing" 
+      :class="{view: !isEditing}"
+      v-if="isEditing"
+      :custom-strings="{
+        upload: '<h1>Photo</h1>',
+        drag: 'Drag a photo'
+      }"
+      v-on:change="onChange">
+    </picture-input>
+</md-card-media>
+
+
 
       <md-subheader>Personal details</md-subheader>
       <md-list-item>
@@ -84,13 +104,23 @@
         </div>
       </md-list-item>
 
-     
+     <md-dialog-alert
+      :md-active.sync="edited"
+      md-content="Your contact has been updated!"
+      md-confirm-text="Ok" />
+
+      <md-dialog-alert
+      :md-active.sync="deleted"
+      md-content="Your contact has not been deleted!"
+      md-confirm-text="Ok" />
+
+
 <md-card-actions>
         <md-button><router-link class="btn btn-primary" v-bind:to="'/'">Go back</router-link></md-button>
-        <md-button class="btn btn-danger" v-on:click="deleteContact(id)">Delete</md-button>
+        <md-button class="btn btn-danger" v-on:click="deleteContact(id), deleted = true">Delete</md-button>
          <md-button v-on:click="isEditing = !isEditing" v-if="!isEditing">Edit</md-button>
-        <md-button v-on:click="save" v-else-if="isEditing">Save</md-button>
-        <md-button v-if="isEditing" v-on:click="isEditing = !isEditing">Cancel</md-button>
+        <md-button v-if="isEditing" v-on:click="save, edited = true, isEditing = !isEditing" >Save</md-button>
+        <md-button v-if="isEditing"  v-on:click="isEditing = !isEditing">Cancel</md-button>
 </md-card-actions>
 
     </md-list>
@@ -101,16 +131,20 @@
 
 <script>
   import axios from 'axios';
+  import PictureInput from 'vue-picture-input';
   export default {
     name: 'contacts',
     data () {      
     return {
       isEditing: false,
+      edited: false,
+      deleted: false,
       filterInput:'',     
       contacts: [{
         id: 0,
         name1: '',
         surname1: '',
+        photo:'',
         addresses: [{
                 city : '',
                 street: '',
@@ -129,6 +163,9 @@
               
       }]
     }
+  },
+  components: {
+    PictureInput
   },
   
   created(id) {
@@ -191,7 +228,16 @@ methods: {
     .catch((error) => {
       console.log(error);
     });
-  }
+  },
+  onChange (photo) {
+      console.log('New picture selected!')
+      if (photo) {
+        console.log('Picture loaded.')
+        this.photo = photo
+      } else {
+        console.log('FileReader API not supported: use the <form>, Luke!')
+      }
+    }
   
 }
  
