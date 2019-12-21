@@ -156,7 +156,7 @@ namespace ContactBook.Controllers
         }
 
         [HttpPost]
-        [Route("api/Contact/update")]
+        [Route("api/Contact/update/email/{emailID}")]
         public IHttpActionResult UpdateEmail(ICollection<Emails> email, int EmailID)
         {
             if (!IsValidEmail(email))

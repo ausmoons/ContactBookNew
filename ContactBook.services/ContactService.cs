@@ -113,12 +113,12 @@ namespace ContactBook
         {
             using (var context = new ContactBookContext())
             {
-                var updateContact = context.Contacts.Include(f => f.Addresses).Include(f => f.PhoneNumbers).Include(f => f.Emails).SingleOrDefault(x => x.Id == id);
+                var updateContact =  context.Contacts.Include(f => f.Addresses).Include(f => f.PhoneNumbers).Include(f => f.Emails).SingleOrDefault(x => x.Id == id);
 
 
                   context.Entry(updateContact).CurrentValues.SetValues(contact);
                   context.SaveChanges();
-                  return new ServiceResult(id, true);
+                 return new ServiceResult(id, true);
                 
 
                
