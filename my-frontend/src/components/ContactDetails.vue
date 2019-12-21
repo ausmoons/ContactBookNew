@@ -106,7 +106,7 @@
     data () {      
     return {
       isEditing: false,
-      
+      filterInput:'',     
       contacts: [{
         id: 0,
         name1: '',
@@ -156,7 +156,7 @@ methods: {
                     photo: this.contacts.photo
                 }
 
-                this.$http.put('https://localhost:44366/api/Contact/update/id/'+this.$route.params.emails[0].emailID, updContact)
+                this.$http.put('https://localhost:44366/api/Contact/update/id/'+this.$route.params.id, updContact)
                     .then(function(response){
                         this.$router.push({path: '/', query: {alert: 'Customer Updated'}});
                     });
@@ -169,12 +169,12 @@ methods: {
   saveEmail(e){
                 let updEmail = {
                     emails: [{
-                        emailID: this.contacts.emails.emailID,
-                        emailAddress: this.contacts.emails.emailAddress,
+                        emailID: this.contacts.emails[0].emailID,
+                        emailAddress: this.contacts.emails[0].emailAddress,
                         type: this.contacts.emails.type,
                     }]
                 }
-                this.$http.put('https://localhost:44366/api/Contact/update/email/'+this.emailID, updEmail)
+                this.$http.put('https://localhost:44366/api/Contact/update/email/' + this.updEmail.emails[0], updEmail)
                     .then(function(response){
                         this.$router.push({path: '/', query: {alert: 'Customer Updated'}});
                     });
@@ -192,6 +192,7 @@ methods: {
       console.log(error);
     });
   }
+  
 }
  
 }

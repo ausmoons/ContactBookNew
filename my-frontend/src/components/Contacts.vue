@@ -3,10 +3,12 @@
   <div class="contacts container">
     <Alert v-if="alert" v-bind:message="alert" />
     <h1 class="page-header">Contacts</h1>
-    <input class="form-control" placeholder="Enter Last Name" v-model="filterInput">
+
+    <span>Search: </span>
+    <input class="form-control" placeholder="Enter name" v-model="filterInput">
     <br />
 
-  <div  v-for="contact in contacts" :key="contact.id">  
+  <div  v-for="contact in filterBy(contacts, filterInput)" :key="contact.id">  
     <md-card  md-with-hover>
       <md-card-header>
         <md-card-header-text>
@@ -68,7 +70,13 @@
             return contact;
           });
         });
-    }
+    },
+    filterBy(list, value){
+        value = value.charAt(0).toUpperCase() + value.slice(1);
+        return list.filter(function(contacts){
+          return contacts.name1.indexOf(value) > -1;
+        });
+   }
   },
    created: function(){
       if(this.$route.query.alert){
