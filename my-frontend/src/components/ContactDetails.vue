@@ -1,110 +1,8 @@
 <template>
 
-  <div>
-    <h1 class="page-header">Contact details</h1>
-    <md-list class="md-double-line">
+  <div id="contact">
 
-        <md-card-media>
-          <img v-if="contacts.photo">
-          <img v-else: src="https://sm.pcmag.com/pcmag_in/feature/g/get-organi/get-organized-update-your-profile-picture_9acz.jpg" alt="People" >
-                <md-field :disabled="!isEditing" :class="{view: !isEditing}" v-if="isEditing">
-                    <label>Profile picture</label>
-                    <md-file v-model="contacts.photo" accept="image/*"  :disabled="!isEditing" :class="{view: !isEditing}"/>
-               </md-field>
-        </md-card-media>
-
-<md-card-media>
-       <picture-input 
-      ref="pictureInput"
-      v-model="contacts.photo"
-      accept="image/jpeg,image/png" 
-      button-class="btn"
-      :disabled="!isEditing" 
-      :class="{view: !isEditing}"
-      v-if="isEditing"
-      :custom-strings="{
-        upload: '<h1>Photo</h1>',
-        drag: 'Drag a photo'
-      }"
-      v-on:change="onChange">
-    </picture-input>
-</md-card-media>
-
-
-
-      <md-subheader>Personal details</md-subheader>
-      <md-list-item>
-        <div class="md-list-item-text">
-          <span>Name:</span>
-          <input type="text" v-model="contacts.name1" :disabled="!isEditing" :class="{view: !isEditing}">
-          <span>Second Name: </span>
-           <input type="text" v-model="contacts.name2" :disabled="!isEditing" :class="{view: !isEditing}">
-          <span>Surname: </span>
-           <input type="text" v-model="contacts.surname1" :disabled="!isEditing" :class="{view: !isEditing}">
-          <span>Second surname: </span>
-           <input type="text" v-model="contacts.surname2" :disabled="!isEditing" :class="{view: !isEditing}">
-          <span>Birthday: </span>    
-           <input type="date" v-model="contacts.birthday" :disabled="!isEditing" :class="{view: !isEditing}">
-        </div>
-      </md-list-item>
-
-      <md-divider></md-divider>
-
-
-
-      <md-subheader>Email</md-subheader>
-      <md-list-item>
-        <div class="md-list-item-text" v-for="item in contacts.emails" :key="item.emailID">
-          <span> <input type="text" v-model="item.emailAddress" :disabled="!isEditing" :class="{view: !isEditing}"></span>
-         <span> <input type="text" v-model="item.type" :disabled="!isEditing" :class="{view: !isEditing}"></span>
-        </div>
-      </md-list-item>
-
-<md-card-actions> 
-        <md-button v-on:click="saveEmail" v-if="isEditing">Save</md-button>      
-</md-card-actions>
-      
-
-
-      <md-divider></md-divider>
-
-      <md-subheader>Phone</md-subheader>
-      <md-list-item>
-        <div class="md-list-item-text" v-for="item in contacts.phoneNumbers" :key="item.PhoneNumberID">
-          <span> <input type="text" v-model="item.phoneNumber" :disabled="!isEditing" :class="{view: !isEditing}"></span>
-         <span> <input type="text" v-model="item.type" :disabled="!isEditing" :class="{view: !isEditing}"></span>
-        </div>
-      </md-list-item>
-
-      <md-divider></md-divider>
-
-      <md-subheader>Address</md-subheader>
-      <md-list-item>
-        <div class="md-list-item-text" v-for="item in contacts.addresses" :key="item.AddressID">
-        <span>City: </span>
-        <input type="text" v-model="item.city" :disabled="!isEditing" :class="{view: !isEditing}">
-        <span>Street: </span>
-        <input type="text" v-model="item.street" :disabled="!isEditing" :class="{view: !isEditing}">
-        <span>House number: </span>
-        <input type="text" v-model="item.houseNumber" :disabled="!isEditing" :class="{view: !isEditing}">
-        <span>Postal code: </span>
-        <input type="text" v-model="item.postalCode" :disabled="!isEditing" :class="{view: !isEditing}">
-        </div>
-      </md-list-item>
-
- <md-divider></md-divider>
-
-      <md-subheader>Additional information</md-subheader>
-      <md-list-item>
-        <div class="md-list-item-text">
-         <span>Notes: </span>
-         <input type="text" v-model="contacts.notes" :disabled="!isEditing" :class="{view: !isEditing}">
-         <span>Company: </span>
-         <input type="text" v-model="contacts.company" :disabled="!isEditing" :class="{view: !isEditing}">
-        </div>
-      </md-list-item>
-
-     <md-dialog-alert
+         <md-dialog-alert
       :md-active.sync="edited"
       md-content="Your contact has been updated!"
       md-confirm-text="Ok" />
@@ -115,12 +13,124 @@
       md-confirm-text="Ok" />
 
 
+    <h1 class="page-header">Contact details</h1>
+    <md-list class="md-double-line">
+
+        <md-card-media>
+          <img v-if="contacts.photo" src="contacts.photo" alt="profilePic" >
+          <img v-else src="https://sm.pcmag.com/pcmag_in/feature/g/get-organi/get-organized-update-your-profile-picture_9acz.jpg" alt="People" >
+                <md-field :disabled="!isEditingContact" :class="{view: !isEditingContact}" v-if="isEditingContact">
+                    <label>Profile picture</label>
+                    <md-file v-model="contacts.photo" accept="image/*"  :disabled="!isEditingContact" :class="{view: !isEditingContact}"/>
+               </md-field>
+        </md-card-media>
+
+      <md-subheader>Personal details</md-subheader>
+      <md-list-item>
+        <div class="md-list-item-text">
+          <span>Name:</span>
+          <input type="text" v-model="contacts.name1" :disabled="!isEditingContact" :class="{view: !isEditingContact}">
+          <span>Second Name: </span>
+           <input type="text" v-model="contacts.name2" :disabled="!isEditingContact" :class="{view: !isEditingContact}">
+          <span>Surname: </span>
+           <input type="text" v-model="contacts.surname1" :disabled="!isEditingContact" :class="{view: !isEditingContact}">
+          <span>Second surname: </span>
+           <input type="text" v-model="contacts.surname2" :disabled="!isEditingContact" :class="{view: !isEditingContact}">
+          <span>Birthday: </span>    
+           <date-picker type="date" format="yyyy-MM-dd" v-model="contacts.birthday" :disabled="!isEditingContact" :class="{view: !isEditingContact}"></date-picker>
+        </div>
+      </md-list-item>
+
+      <md-divider></md-divider>
+
+
+
+
+      <md-subheader>Email</md-subheader>
+      <md-list-item>
+        <div class="md-list-item-text" v-for="item in contacts.emails" :key="item.emailID" >
+           <span>Email address: </span>
+           <input type="text" v-model="item.emailAddress" :disabled="!isEditingEmail" :class="{view: !isEditingEmail}">
+              <span>Email type: </span>
+          <input type="text" v-model="item.type" :disabled="!isEditingEmail" :class="{view: !isEditingEmail}">  
+         </div>
+      </md-list-item>
+
+
+<md-card-actions> 
+        <md-button  v-if="isEditingEmail" v-on:click="saveEmail" >Save</md-button>     
+         <md-button  v-on:click="deleteEmail" >Delete</md-button> 
+           <md-button v-on:click="isEditingEmail = !isEditingEmail"  v-if="!isEditingEmail">Edit</md-button>
+           <md-button v-on:click="isEditingEmail = !isEditingEmail"  v-if="isEditingEmail">Cancel</md-button>
+       
+            <md-button v-on:click="addEmail" >Add email</md-button>
+ 
+</md-card-actions>
+      
+
+
+      <md-divider></md-divider>
+
+      <md-subheader>Phone</md-subheader>
+      <md-list-item>
+        <div class="md-list-item-text" v-for="item in contacts.phoneNumbers" :key="item.PhoneNumberID">
+            <span>Phone number: </span>
+           <input type="text" v-model="item.phoneNumber" :disabled="!isEditingPhone" :class="{view: !isEditingPhone}">
+           <span>Type: </span>
+          <input type="text" v-model="item.type" :disabled="!isEditingPhone" :class="{view: !isEditingPhone}">
+        </div>
+      </md-list-item>
+
+      <md-card-actions> 
+        <md-button  v-if="isEditingPhone" v-on:click="savePhone" >Save</md-button>  
+        <md-button class="btn btn-danger" v-on:click="deletePhone">Delete</md-button>   
+         <md-button v-on:click="isEditingPhone = !isEditingPhone" v-if="!isEditingPhone">Edit</md-button> 
+         <md-button  v-on:click="deleteEmail"   >Delete</md-button> 
+</md-card-actions>
+
+      <md-divider></md-divider>
+
+      <md-subheader>Address</md-subheader>
+      <md-list-item>
+        <div class="md-list-item-text" v-for="item in contacts.addresses" :key="item.AddressID">
+        <span>City: </span>
+        <input type="text" v-model="item.city" :disabled="!isEditingAddress" :class="{view: !isEditingAddress}">
+        <span>Street: </span>
+        <input type="text" v-model="item.street" :disabled="!isEditingAddress" :class="{view: !isEditingAddress}">
+        <span>House number: </span>
+        <input type="text" v-model="item.houseNumber" :disabled="!isEditingAddress" :class="{view: !isEditingAddress}">
+        <span>Postal code: </span>
+        <input type="text" v-model="item.postalCode" :disabled="!isEditingAddress" :class="{view: !isEditingAddress}">
+        </div>
+      </md-list-item>
+
+      <md-card-actions> 
+        <md-button  v-if="isEditingAddress" v-on:click="saveAddress" >Save</md-button>  
+        <md-button class="btn btn-danger" v-on:click="deleteAddress">Delete</md-button>   
+       <md-button v-on:click="isEditingAddress = !isEditingAddress" v-if="!isEditingAddress">Edit</md-button>  
+        <md-button v-on:click="isEditingAddress = !isEditingAddress"  v-if="isEditingAddress">Cancel</md-button>
+</md-card-actions>
+
+ <md-divider></md-divider>
+
+      <md-subheader>Additional information</md-subheader>
+      <md-list-item>
+        <div class="md-list-item-text">
+         <span>Notes: </span>
+         <input type="text" v-model="contacts.notes" :disabled="!isEditingContact" :class="{view: !isEditingContact}">
+         <span>Company: </span>
+         <input type="text" v-model="contacts.company" :disabled="!isEditingContact" :class="{view: !isEditingContact}">
+        </div>
+      </md-list-item>
+
+
+
 <md-card-actions>
         <md-button><router-link class="btn btn-primary" v-bind:to="'/'">Go back</router-link></md-button>
         <md-button class="btn btn-danger" v-on:click="deleteContact(id), deleted = true">Delete</md-button>
-         <md-button v-on:click="isEditing = !isEditing" v-if="!isEditing">Edit</md-button>
-        <md-button v-if="isEditing" v-on:click="save, edited = true, isEditing = !isEditing" >Save</md-button>
-        <md-button v-if="isEditing"  v-on:click="isEditing = !isEditing">Cancel</md-button>
+         <md-button v-on:click="isEditingContact = !isEditingContact" v-if="!isEditingContact">Edit</md-button>
+         <md-button v-if="isEditingContact" v-on:click="save"  >Save</md-button> 
+        <md-button v-if="isEditingContact"  v-on:click="isEditingContact = !isEditingContact">Cancel</md-button>
 </md-card-actions>
 
     </md-list>
@@ -131,43 +141,58 @@
 
 <script>
   import axios from 'axios';
-  import PictureInput from 'vue-picture-input';
+  import DatePicker from 'vuejs-datepicker';
+
+
   export default {
-    name: 'contacts',
+   name: 'contact',
     data () {      
     return {
-      isEditing: false,
+      isEditingContact: false,
+      isEditingEmail: false,
+      isEditingPhone: false,
+      isEditingAddress: false,
+     
       edited: false,
       deleted: false,
       filterInput:'',     
       contacts: [{
         id: 0,
         name1: '',
+        name2: '',
         surname1: '',
+        surname2: '',
         photo:'',
+        birthday: '',
+        notes: '',
+        company: '',
         addresses: [{
+          addressID: 0,   
                 city : '',
                 street: '',
                 houseNumber: '',
                 postalCode: '',
+                contactId: 0,      
                 }], 
             phoneNumbers: [{
-                phoneNumber: '',
-                type: '',
+              phoneNumberID: 0, 
+              phoneNumber: '',
+              type: '',
+              contactId: 0,      
                  }], 
             emails: [{  
-              emailID: 0,             
-                emailAddress:'',
-                type: '',
-                }]
+              emailID: 0, 
+              contactId: 0,            
+              emailAddress:'',
+              type: '',
+              }]
               
       }]
     }
   },
   components: {
-    PictureInput
-  },
-  
+    DatePicker
+  }, 
   created(id) {
     axios.get('https://localhost:44366/api/Contact/id/' + this.$route.params.id)
     .then((response) => {
@@ -176,69 +201,129 @@
     .catch((e) => {
       console.error(e)
     })
+   
   },       
   
 methods: {
      save(e){
-            if(!this.contacts.name1 || !this.contacts.surname1){
-                this.alert = 'Please fill in all required fields';
-            } else {
-                let updContact = {
-                    id: this.contacts.id,
+          e.preventDefault();
+          let currentObj = this;
+          axios.put('https://localhost:44366/api/Contact/update/id/'+this.$route.params.id, {
+                     id: this.contacts.id,
                     name1: this.contacts.name1,
                     name2: this.contacts.name2,
                     surname1: this.contacts.surname1,
                     surname2: this.contacts.surname2,
                     birthday: this.contacts.birthday,
-                    photo: this.contacts.photo
-                }
-
-                this.$http.put('https://localhost:44366/api/Contact/update/id/'+this.$route.params.id, updContact)
-                    .then(function(response){
-                        this.$router.push({path: '/', query: {alert: 'Customer Updated'}});
-                    });
-
-                e.preventDefault();
-            }
-            e.preventDefault();
-            this.isEditing = false;
+                    photo: this.contacts.photo,
+                    notes: this.contacts.notes,
+                    company: this.contacts.company
+               })
+               .then(function (response) {
+                      currentObj.output = response.data;
+                      console.log(response.message);
+                  });
+          
+          this.edited= true;           
       },
   saveEmail(e){
-                let updEmail = {
-                    emails: [{
-                        emailID: this.contacts.emails[0].emailID,
+          e.preventDefault();
+          let currentObj = this;
+          axios.put('https://localhost:44366/api/Contact/update/email/' + this.contacts.emails[0].emailID, {
+                         emailID: this.contacts.emails[0].emailID,
+                        contactId: this.contacts.emails[0].contactId,
                         emailAddress: this.contacts.emails[0].emailAddress,
-                        type: this.contacts.emails.type,
-                    }]
-                }
-                this.$http.put('https://localhost:44366/api/Contact/update/email/' + this.updEmail.emails[0], updEmail)
-                    .then(function(response){
-                        this.$router.push({path: '/', query: {alert: 'Customer Updated'}});
-                    });
-
-                e.preventDefault();
-           
-            this.isEditing = false;
+                         type: this.contacts.emails[0].type
+          })
+          .then(function (response) {
+           currentObj.output = response.data;
+           console.log(response.message);
+                  });
+         
+          this.edited= true;
       },
+        addEmail(e){
+          e.preventDefault();
+          let currentObj = this;
+          axios.post('https://localhost:44366/api/Email/' + this.$route.params.id, {
+                         emailID: this.contacts.emails[0].emailID,
+                        contactId: this.contacts.emails[0].contactId,
+                        emailAddress: this.contacts.emails[0].emailAddress,
+                         type: this.contacts.emails[0].type
+          })
+          .then(function (response) {
+           currentObj.output = response.data;
+           console.log(response.message);
+                  });
+         
+          this.edited= true;
+      },
+   savePhone(e){
+          e.preventDefault();
+          let currentObj = this;
+          axios.put('https://localhost:44366/api/Contact/update/phone/' + this.contacts.phoneNumbers[0].phoneNumberID, {
+                        phoneNumberID: this.contacts.phoneNumbers[0].phoneNumberID,
+                        phoneNumber: this.contacts.phoneNumbers[0].phoneNumber,
+                        contactId: this.contacts.phoneNumbers[0].contactId,
+                        type: this.contacts.phoneNumbers[0].type
+          })
+          .then(function (response) {
+           currentObj.output = response.data;
+           console.log(response.message);
+           });
+           
+          this.edited= true;
+      },
+        saveAddress(e){
+          e.preventDefault();
+          let currentObj = this;
+          axios.put('https://localhost:44366/api/Contact/update/address/' + this.contacts.addresses[0].addressID, {
+                      addressID: this.contacts.addresses[0].addressID,
+                        city: this.contacts.addresses[0].city,
+                        street: this.contacts.addresses[0].street,
+                        houseNumber: this.contacts.addresses[0].houseNumber,
+                        postalCode: this.contacts.addresses[0].postalCode,
+                        contactId: this.contacts.addresses[0].contactId,
+          })
+          .then(function (response) {
+           currentObj.output = response.data;
+           console.log(response.message);
+                  });
+            
+           this.edited= true;
+      },
+
   deleteContact: function(id) {
   axios.delete('https://localhost:44366/api/Contact/Delete/id/' + this.$route.params.id)
-    .then((response) => {
-      this.fetchContactList();
-    })
     .catch((error) => {
       console.log(error);
+      this.deleted = true
     });
-  },
-  onChange (photo) {
-      console.log('New picture selected!')
-      if (photo) {
-        console.log('Picture loaded.')
-        this.photo = photo
-      } else {
-        console.log('FileReader API not supported: use the <form>, Luke!')
-      }
-    }
-  
+  }, 
+    deleteEmail(e){
+      e.preventDefault();
+  axios.delete('https://localhost:44366/api/Contact/Delete/emailID/' + this.contacts.emails[0].emailID)
+    .catch((error) => {
+      console.log(error);
+     this.deleted = true
+    });
+  }, 
+  deletePhone(e){
+     e.preventDefault();
+  axios.delete('https://localhost:44366/api/Contact/Delete/phoneID/' + this.contacts.phoneNumbers[0].phoneNumberID)
+    .catch((error) => {
+      console.log(error);
+     this.deleted = true
+    });
+  }, 
+  deleteAddress(e){
+      e.preventDefault();
+  axios.delete('https://localhost:44366/api/Contact/Delete/addressID/' + this.contacts.addresses[0].addressID)
+    .catch((error) => {
+      console.log(error);
+      this.deleted = true
+    });
+  }, 
 }
  
 }

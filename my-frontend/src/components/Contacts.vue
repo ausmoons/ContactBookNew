@@ -1,7 +1,7 @@
 <template>
 
   <div class="contacts container">
-    <Alert v-if="alert" v-bind:message="alert" />
+    
     <h1 class="page-header">Contacts</h1>
 
     <span>Search: </span>
@@ -20,7 +20,8 @@
 
 
         <md-card-media>
-          <img src="https://sm.pcmag.com/pcmag_in/feature/g/get-organi/get-organized-update-your-profile-picture_9acz.jpg" alt="People">
+          <img v-if="contacts.photo" src="contacts.photo" alt="profilePic" >
+          <img v-else src="https://sm.pcmag.com/pcmag_in/feature/g/get-organi/get-organized-update-your-profile-picture_9acz.jpg" alt="People">
         </md-card-media>
       </md-card-header>
 
@@ -42,13 +43,34 @@
 </template>
 
 <script>
-  import Alert from './Alert';
+ 
   import axios from 'axios';
   export default {
     name: 'contacts',
     data: () => ({
-      contacts: [],
-      alert:'',
+      contacts: [{
+        id: 0,
+        name1: '',
+        surname1: '',
+        photo:'',
+        birthday: '',
+        addresses: [{
+                city : '',
+                street: '',
+                houseNumber: '',
+                postalCode: '',
+                }], 
+            phoneNumbers: [{
+                phoneNumber: '',
+                type: '',
+                 }], 
+            emails: [{  
+              emailID: 0,             
+                emailAddress:'',
+                type: '',
+                }]
+              
+      }],
         filterInput:''
     }),
     methods: {
@@ -79,17 +101,13 @@
    }
   },
    created: function(){
-      if(this.$route.query.alert){
-        this.alert = this.$route.query.alert;
-      }
+      
       this.fetchContacts();
     },
     updated: function(){
       this.fetchContacts();
     },
-    components: {
-      Alert
-    }
+   
   }
     
 </script>

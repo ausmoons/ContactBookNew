@@ -23,6 +23,8 @@ namespace ContactBook.Data
         {
             Database.SetInitializer<ContactBookContext>(null);
             Database.SetInitializer(new MigrateDatabaseToLatestVersion<ContactBookContext, Configuration>());
+            this.Configuration.LazyLoadingEnabled = false;
+            this.Configuration.ProxyCreationEnabled = false;
         }
 
 
@@ -30,6 +32,7 @@ namespace ContactBook.Data
         public DbSet<Addresses> Addresses { get; set; }
         public DbSet<PhoneNumbers> PhoneNumbers { get; set; }
         public DbSet<Emails> Emails { get; set; }
+
 
     }
 }

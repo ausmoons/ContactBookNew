@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 using ContactBook.Models;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace ContactBook.Controllers
 {
@@ -33,6 +32,47 @@ namespace ContactBook.Controllers
 
             return request.CreateResponse(HttpStatusCode.OK, contact);
         }
+
+        [HttpGet]
+        [Route("api/Contact/email/{emailID}")]
+        public async Task<HttpResponseMessage> GetEmail(HttpRequestMessage request, int emailID)
+        {
+            var email = await _contactService.FindEmailByEmailID(emailID);
+            if (email == null)
+            {
+                return request.CreateResponse(HttpStatusCode.NotFound, email);
+            }
+
+            return request.CreateResponse(HttpStatusCode.OK, email);
+        }
+
+        [HttpGet]
+        [Route("api/Contact/phone/{phoneNumberID}")]
+        public async Task<HttpResponseMessage> GetByPhoneNmber(HttpRequestMessage request, int phoneNumberID)
+        {
+            var phone = await _contactService.FindContactByPhone(phoneNumberID);
+            if (phone == null)
+            {
+                return request.CreateResponse(HttpStatusCode.NotFound, phone);
+            }
+
+            return request.CreateResponse(HttpStatusCode.OK, phone);
+        }
+
+        [HttpGet]
+        [Route("api/Contact/address/{addressID}")]
+        public async Task<HttpResponseMessage> GetByAddress(HttpRequestMessage request, int addressID)
+        {
+            var address = await _contactService.FindContactByAddress(addressID);
+            if (address == null)
+            {
+                return request.CreateResponse(HttpStatusCode.NotFound, address);
+            }
+
+            return request.CreateResponse(HttpStatusCode.OK, address);
+        }
+
+
 
         [HttpGet]
         [Route("api/Contact/{name1}")]
@@ -71,31 +111,7 @@ namespace ContactBook.Controllers
 
             return request.CreateResponse(HttpStatusCode.OK, contact);
         }
-        [HttpGet]
-        [Route("api/Contact/{phoneNumber}")]
-        public async Task<HttpResponseMessage> GetByPhoneNmber(HttpRequestMessage request, string phoneNumber)
-        {
-            var contact = await _contactService.FindContactByPhone(phoneNumber);
-            if (contact == null)
-            {
-                return request.CreateResponse(HttpStatusCode.NotFound, contact);
-            }
-
-            return request.CreateResponse(HttpStatusCode.OK, contact);
-        }
-
-        [HttpGet]
-        [Route("api/Contact/email/{email}")]
-        public async Task<HttpResponseMessage> GetByEmail(HttpRequestMessage request, string email)
-        {
-            var contact = await _contactService.FindContactByEmail(email);
-            if (contact == null)
-            {
-                return request.CreateResponse(HttpStatusCode.NotFound, contact);
-            }
-
-            return request.CreateResponse(HttpStatusCode.OK, contact);
-        }
+    
 
 
 
@@ -129,9 +145,66 @@ namespace ContactBook.Controllers
         }
 
 
+        [HttpPost]
+        [Route("api/Email/{ContactId}")]
+        public IHttpActionResult AddEmail(Emails email)
+        {
+            if (!IsValidEmail(email))
+            {
+                return BadRequest();
+            }
+
+            var result = _contactService.AddEmailService(email);
+            if (!result.Succeeded)
+            {
+                return Conflict();
+            }
+            email.EmailID = result.Id;
+            return Created(string.Empty, email);
+
+        }
+
+        [HttpPost]
+        [Route("api/Phone/{ContactId}")]
+        public IHttpActionResult AddPhone(PhoneNumbers phone)
+        {
+            if (!IsValidPhone(phone))
+            {
+                return BadRequest();
+            }
+
+            var result = _contactService.AddPhoneService(phone);
+            if (!result.Succeeded)
+            {
+                return Conflict();
+            }
+            phone.PhoneNumberID = result.Id;
+            return Created(string.Empty, phone);
+
+        }
+
+        [HttpPost]
+        [Route("api/Address/{ContactId}")]
+        public IHttpActionResult AddAddress(Addresses address)
+        {
+            if (!IsValidAddress(address))
+            {
+                return BadRequest();
+            }
+
+            var result = _contactService.AddAddressService(address);
+            if (!result.Succeeded)
+            {
+                return Conflict();
+            }
+            address.AddressID = result.Id;
+            return Created(string.Empty, address);
+
+        }
+
         [HttpPut]
         [Route("api/Contact/update/id/{id}")]
-        public IHttpActionResult UpdateContact(int id, Contact contact)
+        public IHttpActionResult UpdateContact(int id, Contact updContact)
         {
 
             var contactToUpdate = _contactService.FindContactById(id);
@@ -142,58 +215,58 @@ namespace ContactBook.Controllers
             }
             else
             {
-                var result = _contactService.Update(id, contact);
+                var result = _contactService.Update(id, updContact);
                 if (!result.Succeeded)
                 {
                     return Conflict();
                 }
-                contact.Id = result.Id;
-                return Created(string.Empty, contact);
+                updContact.Id = result.Id;
+                return Created(string.Empty, updContact);
             }
             
             
 
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("api/Contact/update/email/{emailID}")]
-        public IHttpActionResult UpdateEmail(ICollection<Emails> email, int EmailID)
+        public IHttpActionResult UpdateEmail(int EmailID, Emails updEmail)
         {
-            if (!IsValidEmail(email))
+            if (!IsValidEmail(updEmail))
             {
                 return BadRequest();
             }
 
-            var result = _contactService.UpdateEmailService(email, EmailID); //
-            return Ok(result);
+            var result = _contactService.UpdateEmailService(EmailID, updEmail);
+            return Created(string.Empty, updEmail);
 
         }
 
-        [HttpPost]
-        [Route("api/Contact/update")]
-        public IHttpActionResult UpdateAddress(ICollection<Addresses> address, int addressID)
+        [HttpPut]
+        [Route("api/Contact/update/address/{addressID}")]
+        public IHttpActionResult UpdateAddress(int addressID, Addresses updAddress)
         {
-            if (!IsValidAddress(address))
+            if (!IsValidAddress(updAddress))
             {
                 return BadRequest();
             }
 
-            var result = _contactService.UpdateAddressService(address, addressID);
-            return Ok(result);
+            var result = _contactService.UpdateAddressService(addressID, updAddress);
+            return Created(string.Empty, updAddress);
 
         }
 
-        [HttpPost]
-        [Route("api/Contact/update")]
-        public IHttpActionResult UpdatePhone(ICollection<PhoneNumbers> phoneNumber, int phoneNumberID)
+        [HttpPut]
+        [Route("api/Contact/update/phone/{phoneNumberID}")]
+        public IHttpActionResult UpdatePhone(int phoneNumberID, PhoneNumbers updPhoneNumber)
         {
-            if (!IsValidPhone(phoneNumber))
+            if (!IsValidPhone(updPhoneNumber))
             {
                 return BadRequest();
             }
 
-            var result = _contactService.UpdatePhoneService(phoneNumber, phoneNumberID);
-            return Ok(result);
+            var result = _contactService.UpdatePhoneService(phoneNumberID, updPhoneNumber);
+            return Created(string.Empty, updPhoneNumber);
 
         }
 
@@ -201,9 +274,7 @@ namespace ContactBook.Controllers
         public bool IsValid(Contact contact)
         {
             return !string.IsNullOrEmpty(contact.Name1) &&
-                     !string.IsNullOrEmpty(contact.Surname1) &&
-            IsValidPhone(contact.PhoneNumbers) &&  IsValidAddress(contact.Addresses) &&
-            IsValidEmail(contact.Emails) && IsValidDate(contact.Birthday);
+                     !string.IsNullOrEmpty(contact.Surname1) && IsValidDate(contact.Birthday);
         }
 
         public bool IsValidDate(DateTime? birthday)
@@ -224,38 +295,20 @@ namespace ContactBook.Controllers
             return isValid;
         }
 
-        public bool IsValidEmail(ICollection<Emails> emails)
+        public bool IsValidEmail(Emails email)
         {
-            var isValid = true;
-            foreach (var emailAddress in emails)
-            {
-                isValid = emailAddress.EmailAddress.Contains("@") && emailAddress.EmailAddress.Contains(".");
-                if (isValid == false)
-                {
-                    isValid = false;
-                }
 
-            }
-            return isValid;
+            return new EmailAddressAttribute().IsValid(email.EmailAddress);
         }
 
-        public  bool IsValidAddress(ICollection<Addresses> addresses) 
+        public  bool IsValidAddress(Addresses addresses) 
         {
-            var street = "";
-            var houseNumber = "";
-            var city = "";
-            var postalCode = "";
+            var street = addresses.Street;
+            var houseNumber = addresses.HouseNumber;
+            var city = addresses.City;
+            var postalCode = addresses.PostalCode;
             bool isValid = true;
 
-
-
-                foreach (var item in addresses)
-                {
-                    street = item.Street;
-                    houseNumber = item.HouseNumber;
-                    city = item.City;
-                    postalCode = item.PostalCode;
-                }
 
             if (!string.IsNullOrEmpty(street) && !string.IsNullOrEmpty(houseNumber) && !string.IsNullOrEmpty(city) && !string.IsNullOrEmpty(street))
             {
@@ -320,51 +373,46 @@ namespace ContactBook.Controllers
             
         }
 
-        public bool IsValidPhone(ICollection<PhoneNumbers> phone)
+        public bool IsValidPhone(PhoneNumbers phoneNumber)
         {
             bool isValid = true;
-            
 
-            foreach (var phoneNumber in phone)
+            bool allDigits = true;
+            bool startsWith = true;
+            bool numberLenght = true;
+
+            foreach (char c in phoneNumber.PhoneNumber)
             {
-
-                bool allDigits = true;
-                bool startsWith = true;
-                bool numberLenght = true;
-
-                foreach (char c in phoneNumber.PhoneNumber)
+                if (!char.IsDigit(c))
                 {
-                    if (!char.IsDigit(c))
-                    {
-                        allDigits = false;
-                        break;
-                    }
+                    allDigits = false;
+                    break;
                 }
-
-
-                    if (phoneNumber.PhoneNumber[0] != '2')
-                    {
-                        startsWith = false;
-                    }
-                          
-
-                if (phoneNumber.PhoneNumber.Length != 8)
-                {
-                    numberLenght = false;
-                }
-
-                if (allDigits == true && startsWith == true && numberLenght == true)
-                {
-                    isValid = true;
-                }
-                else
-                {
-                    isValid = false;
-                } 
-
             }
-            return isValid;
 
+
+            if (phoneNumber.PhoneNumber[0] != '2')
+            {
+                startsWith = false;
+            }
+
+
+            if (phoneNumber.PhoneNumber.Length != 8)
+            {
+                numberLenght = false;
+            }
+
+            if (allDigits == true && startsWith == true && numberLenght == true)
+            {
+                isValid = true;
+            }
+            else
+            {
+                isValid = false;
+            }
+
+
+            return isValid;
         }
 
         [HttpDelete]
@@ -383,9 +431,54 @@ namespace ContactBook.Controllers
             }
         }
 
- 
+        [HttpDelete]
+        [Route("api/Contact/Delete/emailID/{emailID}")]
+        public async Task<IHttpActionResult> DeleteByEmailID(int emailID)
+        {
+
+            var result = await _contactService.RemoveContactByEmailID(emailID);
+            if (!result)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok();
+            }
+        }
 
 
+        [HttpDelete]
+        [Route("api/Contact/Delete/addressID/{addressID}")]
+        public async Task<IHttpActionResult> DeleteByAddressID(int addressID)
+        {
+
+            var result = await _contactService.RemoveContactByAddressID(addressID);
+            if (!result)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok();
+            }
+        }
+
+        [HttpDelete]
+        [Route("api/Contact/Delete/phoneID/{phoneID}")]
+        public async Task<IHttpActionResult> DeleteByPhoneID(int phoneID)
+        {
+
+            var result = await _contactService.RemoveContactByPhoneID(phoneID);
+            if (!result)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok();
+            }
+        }
 
         [HttpDelete]
         [Route("api/Contact/deleteAll")]
@@ -396,21 +489,7 @@ namespace ContactBook.Controllers
         }
 
 
-        [HttpDelete]
-        [Route("api/Contact/name/{name1}")]
-        public async Task<HttpResponseMessage> DeleteByName1(HttpRequestMessage request, string name1)
-        {
-            await _contactService.RemoveContactByName1(name1);
-            return request.CreateResponse(HttpStatusCode.OK);
-        }
-
-        [HttpDelete]
-        [Route("api/Contact/surname/{surname1}")]
-        public async Task<HttpResponseMessage> DeleteBySurname1(HttpRequestMessage request, string surname1)
-        {
-            await _contactService.RemoveContactBySurname1(surname1);
-            return request.CreateResponse(HttpStatusCode.OK);
-        }
+  
 
         
     }

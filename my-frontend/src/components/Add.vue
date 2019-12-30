@@ -69,7 +69,7 @@
 
 <md-card-actions>
         <md-button v-on:click="cancel = true" ><router-link class="btn btn-primary" v-bind:to="'/'">Cancel</router-link></md-button>
-         <md-button type="submit" v-on:click="saved = true" class="btn btn-primary">Submit</md-button>
+         <md-button type="submit" v-on:click="saved = true" class="btn btn-primary">Add</md-button>
 </md-card-actions>
 
 

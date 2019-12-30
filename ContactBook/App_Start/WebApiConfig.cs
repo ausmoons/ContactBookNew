@@ -1,4 +1,5 @@
-﻿using System.Web.Http;
+﻿using ApiMultiPartFormData;
+using System.Web.Http;
 using System.Web.Http.Cors;
 
 namespace ContactBook
@@ -9,7 +10,7 @@ namespace ContactBook
         {
             config.EnableCors(new EnableCorsAttribute("http://localhost:8080", headers: "*", methods: "*"));
 
-
+            
             config.MapHttpAttributeRoutes();
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
@@ -20,6 +21,9 @@ namespace ContactBook
             var formatter = GlobalConfiguration.Configuration.Formatters.JsonFormatter;
             formatter.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver();
 
+
+
+            config.Formatters.Add(new MultipartFormDataFormatter());
 
         }
     }
