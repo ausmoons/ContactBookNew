@@ -21,13 +21,8 @@ namespace ContactBook.Controllers.Tests
             contact.Name1 = "Ilze";
             contact.Surname1 = "Berzina";
             contact.Company = "MyComnapy";          
-
-
-            ContactService _contactService = new ContactService();
-            var context = new ContactBookContext();
-
-            var result = _contactService.AddContact(contact);
-            Assert.IsTrue(result.Succeeded);
+            ContactService _contactService = new ContactService();                
+            controller.AddContact(contact);
             Assert.IsTrue(_contactService.Exists(contact));
            
         }
@@ -37,17 +32,11 @@ namespace ContactBook.Controllers.Tests
         public void AddContact_ShouldNotWork()
         {
             var controller = new ContactController();
-            controller.Clear();
+           controller.Clear();
             Contact contact = new Contact();
-            contact.Id = 36;
-            contact.Name1 = "Daina";
-            contact.Company = "MyComnapy";
-            contact.Notes = "Adding name and company";
-
+            contact.Name1 = "Ilze";
             ContactService _contactService = new ContactService();
-
-            var result = _contactService.AddContact(contact);
-            Assert.IsFalse(result.Succeeded);
+            controller.AddContact(contact);
             Assert.IsFalse(_contactService.Exists(contact));
         }
 
@@ -57,73 +46,44 @@ namespace ContactBook.Controllers.Tests
         public void AddEmail_ShouldWork()
         {
             var controller = new ContactController();
-
+            controller.Clear();
             Contact contact = new Contact();
             contact.Name1 = "Ilze";
             contact.Surname1 = "Berzina";
-            contact.Company = "MyComnapy";
-
-
             ContactService _contactService = new ContactService();
-
-            _contactService.AddContact(contact);
+            controller.AddContact(contact);
 
             Emails email = new Emails();
-            email.ContactId = contact.Id;
             email.EmailAddress = "email@gmail.com";
             email.Type = "home";
-
-            var result
-
+            email.ContactId = contact.Id;
+            _contactService.AddEmailService(email);
+            controller.AddEmail(email);
+            Assert.IsTrue(_contactService.ExistsEmail(email));
 
         }
 
         [TestMethod()]
         [Fact]
-        public void AddEmail_ShouldNotWork()
+        public  void AddEmail_ShouldNotWork()
         {
+            var controller = new ContactController();
+            controller.Clear();
+            Contact contact = new Contact();
+            contact.Name1 = "Ilze";
+            contact.Surname1 = "Berzina";
+            ContactService _contactService = new ContactService();
+            controller.AddContact(contact);
 
+            Emails email = new Emails();
+            email.EmailAddress = "emailgmailcom";
+            email.Type = "home";
+            email.EmailID = contact.Id;
+            controller.AddEmail(email);
+            Assert.IsFalse(_contactService.ExistsEmail(email));
 
 
         }
-
-
-        [TestMethod()]
-         [Fact]
-         public void GetEmailByEmail_ShouldWork()
-         {
-
-
-
-         }
-
-         [TestMethod()]
-         [Fact]
-         public void GetEmailByEmail_ShouldNotWork()
-         {
-
-
-
-         }
-
-        /*   [TestMethod()]
-           [Fact]
-           public void GetAllContacts_ShouldWork()
-           {
-
-
-
-           }
-
-           [TestMethod()]
-           [Fact]
-           public void GetAllContacts_ShouldNotWork()
-           {
-
-
-
-           }
-
 
 
 
@@ -132,28 +92,22 @@ namespace ContactBook.Controllers.Tests
            public void UpdateContact_ShouldWork()
            {
 
-               var controller = new ContactController();
-               controller.Clear();
-               Contact contact = new Contact();
-               contact.Id = 96;
-               contact.Name1 = "Anna";
-               contact.Surname1 = "Liepa";
-               contact.Company = "Visur";
-               contact.Notes = "Adding name and company";
+            var controller = new ContactController();
+            controller.Clear();
+            Contact contact = new Contact();
+            contact.Name1 = "Ilze";
+            contact.Surname1 = "Berzina";
+            contact.Company = "MyComnapy";
+            ContactService _contactService = new ContactService();
+            controller.AddContact(contact);
+            Assert.IsTrue(_contactService.Exists(contact));
 
+            Assert.IsTrue(contact.Name2 == null);
 
-               bool expected = controller.IsValid(contact);
-               Assert.IsTrue(expected == true);
-               ContactService _contactService = new ContactService();
+            contact.Name2 = "Updating Name2";
 
-               var result = _contactService.AddContact(contact);
-               Assert.IsTrue(result.Succeeded);
-               Assert.IsTrue(contact.Name2 == null);
-
-               contact.Name2 = "Updating Name2";
-
-               var updatesContact = controller.UpdateContact(contact); //jāpārveido, lai notestē ar name2
-               Assert.IsTrue(contact.Name2 == "Updating Name2");
+            controller.UpdateContact(contact.Id, contact);
+            Assert.IsTrue(contact.Name2 == "Updating Name2");
 
            }
 
@@ -161,49 +115,73 @@ namespace ContactBook.Controllers.Tests
            [Fact]
            public void UpdateContact_ShouldNotWork()
            {
+            var controller = new ContactController();
+            controller.Clear();
+            Contact contact = new Contact();
+            contact.Name1 = "Ilze";
+            contact.Surname1 = "Berzina";
+            contact.Company = "MyComnapy";
+            ContactService _contactService = new ContactService();
+            controller.AddContact(contact);
+            Assert.IsTrue(_contactService.Exists(contact));
 
-               var controller = new ContactController();
-               controller.Clear();
-               Contact contact = new Contact();
-               contact.Id = 96;
-               contact.Name1 = "Daina";
-               contact.Surname1 = "Liepa";
-               contact.Company = "Visur";
-               contact.Notes = "Adding name and company";
+         
+            contact.Name1 = null;
+
+            _contactService.Update(contact.Id, contact);
 
 
-               bool expected = controller.IsValid(contact);
-               Assert.IsTrue(expected == true);
-               ContactService _contactService = new ContactService();
-
-               var result = _contactService.AddContact(contact);
-               Assert.IsTrue(result.Succeeded);
-               Assert.IsTrue(contact.Name2 == null);
-
-               contact.Name1 = "";
-               bool expectedUpdates = controller.IsValid(contact);
-               Assert.IsFalse(expectedUpdates == true);
-               var updatesContact = controller.UpdateContact(contact);            
-               Assert.IsTrue(contact.Name1 != null);
-
-           }
+            
+        }
 
            [TestMethod()]
            [Fact]
            public void UpdateEmail_ShouldWork()
            {
+            var controller = new ContactController();
+            controller.Clear();
+            Contact contact = new Contact();
+            contact.Name1 = "Ilze";
+            contact.Surname1 = "Berzina";
+            ContactService _contactService = new ContactService();
+            controller.AddContact(contact);
 
+            Emails email = new Emails();
+            email.EmailAddress = "email@gmail.com";
+            email.Type = "home";
+            email.ContactId = contact.Id;
+            _contactService.AddEmailService(email);
+            controller.AddEmail(email);
+            email.Type = "work";
+            controller.UpdateEmail(email.EmailID, email);
+            Assert.IsTrue(email.Type == "work");
 
-           }
+            }
 
            [TestMethod()]
            [Fact]
            public void UpdateEmail_ShouldNotWork()
            {
+            var controller = new ContactController();
+            controller.Clear();
+            Contact contact = new Contact();
+            contact.Name1 = "Ilze";
+            contact.Surname1 = "Berzina";
+            ContactService _contactService = new ContactService();
+            controller.AddContact(contact);
+
+            Emails email = new Emails();
+            email.EmailAddress = "email@gmail.com";
+            email.Type = "home";
+            email.ContactId = contact.Id;
+            _contactService.AddEmailService(email);
+            controller.AddEmail(email);
+            email.EmailAddress = "emailgmailcom";
+            controller.UpdateEmail(email.EmailID, email);
+            Assert.IsFalse(email.EmailAddress == "emailgmailcom");
 
 
-
-           }
+        }
 
            [TestMethod()]
            [Fact]
@@ -272,7 +250,7 @@ namespace ContactBook.Controllers.Tests
 
 
            }
-          */
+          
 
     }
 }
