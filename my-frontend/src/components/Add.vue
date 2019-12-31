@@ -6,11 +6,11 @@
       <h4>Contact Info</h4>
       <div class="form-group">
         <label>First Name</label>
-        <input type="text" class="form-control" placeholder="name1" v-model="name1" />
+        <input type="text" class="form-control" placeholder="Name" v-model="name1" />
       </div>
       <div class="form-group">
         <label>Last Name</label>
-        <input type="text" class="form-control" placeholder="surname1" v-model="surname1" />
+        <input type="text" class="form-control" placeholder="Surname" v-model="surname1" />
       </div>
     </div>
 
@@ -21,20 +21,20 @@
         <input
           type="text"
           class="form-control"
-          placeholder="emailAddress"
+          placeholder="Email address"
           v-model="emails.emailAddress"
         />
       </div>
       <div class="form-group">
         <label>Email type</label>
-        <input type="text" class="form-control" placeholder="emailType" v-model="emails.type" />
+        <input type="text" class="form-control" placeholder="Email type" v-model="emails.type" />
       </div>
       <div class="form-group">
         <label>Phone</label>
         <input
           type="text"
           class="form-control"
-          placeholder="phoneNumbers"
+          placeholder="Phone number"
           v-model="phoneNumbers.phoneNumber"
         />
       </div>
@@ -43,7 +43,7 @@
         <input
           type="text"
           class="form-control"
-          placeholder="phoneNumbersType"
+          placeholder="Phone type"
           v-model="phoneNumbers.type"
         />
       </div>
@@ -53,18 +53,18 @@
       <h4>Address</h4>
       <div class="form-group">
         <label>City</label>
-        <input type="text" class="form-control" placeholder="city" v-model="addresses.city" />
+        <input type="text" class="form-control" placeholder="City" v-model="addresses.city" />
       </div>
       <div class="form-group">
         <label>Street</label>
-        <input type="text" class="form-control" placeholder="street" v-model="addresses.street" />
+        <input type="text" class="form-control" placeholder="Street" v-model="addresses.street" />
       </div>
       <div class="form-group">
         <label>House number</label>
         <input
           type="text"
           class="form-control"
-          placeholder="houseNumber"
+          placeholder="House number"
           v-model="addresses.houseNumber"
         />
       </div>
@@ -73,12 +73,23 @@
         <input
           type="text"
           class="form-control"
-          placeholder="postalCode"
+          placeholder="Postal code"
           v-model="addresses.postalCode"
         />
       </div>
     </div>
 
+<div class="well">
+  <h4>Additional information</h4>
+          <div class="form-group">
+        <label>Notes</label>
+        <input type="text" class="form-control" placeholder="Notes" v-model="notes" />
+      </div>
+      <div class="form-group">
+        <label>Company</label>
+        <input type="text" class="form-control" placeholder="Company" v-model="company" />
+      </div>
+</div>
     <md-dialog-alert
       :md-active.sync="saved"
       md-content="Your contact has been saved!"
@@ -109,9 +120,6 @@ import axios from "axios";
 import router from "../router";
 
 export default {
-  mounted() {
-    console.log("Component mounted.");
-  },
   data() {
     return {
       saved: false,
@@ -119,6 +127,8 @@ export default {
       notSaved: false,
       name1: "",
       surname1: "",
+      notes: "",
+      company: "",
       addresses: [
         {
           city: "",
@@ -149,6 +159,8 @@ export default {
         .post("https://localhost:44366/api/Contact", {
           name1: this.name1,
           surname1: this.surname1,
+          notes: this.contacts.notes,
+          company: this.contacts.company,
           addresses: [
             {
               city: this.addresses.city,
