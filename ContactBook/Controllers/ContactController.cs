@@ -34,7 +34,7 @@ namespace ContactBook.Controllers
         }
 
         [HttpGet]
-        [Route("api/Contact/email/{emailID}")]
+        [Route("api/email/{emailID}")]
         public async Task<HttpResponseMessage> GetEmail(HttpRequestMessage request, int emailID)
         {
             var email = await _contactService.FindEmailByEmailID(emailID);
@@ -47,10 +47,10 @@ namespace ContactBook.Controllers
         }
 
         [HttpGet]
-        [Route("api/Contact/phone/{phoneNumberID}")]
-        public async Task<HttpResponseMessage> GetByPhoneNmber(HttpRequestMessage request, int phoneNumberID)
+        [Route("api/phone/{phoneNumberID}")]
+        public async Task<HttpResponseMessage> GetPhoneNmber(HttpRequestMessage request, int phoneNumberID)
         {
-            var phone = await _contactService.FindContactByPhone(phoneNumberID);
+            var phone = await _contactService.FindPhoneByPhoneID(phoneNumberID);
             if (phone == null)
             {
                 return request.CreateResponse(HttpStatusCode.NotFound, phone);
@@ -60,10 +60,10 @@ namespace ContactBook.Controllers
         }
 
         [HttpGet]
-        [Route("api/Contact/address/{addressID}")]
-        public async Task<HttpResponseMessage> GetByAddress(HttpRequestMessage request, int addressID)
+        [Route("api/address/{addressID}")]
+        public async Task<HttpResponseMessage> GetAddress(HttpRequestMessage request, int addressID)
         {
-            var address = await _contactService.FindContactByAddress(addressID);
+            var address = await _contactService.FindAddressByAddressID(addressID);
             if (address == null)
             {
                 return request.CreateResponse(HttpStatusCode.NotFound, address);
@@ -72,49 +72,7 @@ namespace ContactBook.Controllers
             return request.CreateResponse(HttpStatusCode.OK, address);
         }
 
-
-
-        [HttpGet]
-        [Route("api/Contact/{name1}")]
-        public async Task<HttpResponseMessage> GetByName1(HttpRequestMessage request, string name1)
-        {
-            var contact = await _contactService.FindContactByName1(name1);
-            if (contact == null)
-            {
-                return request.CreateResponse(HttpStatusCode.NotFound, contact);
-            }
-
-            return request.CreateResponse(HttpStatusCode.OK, contact);
-        }
-
-        [HttpGet]
-        [Route("api/Contact/{surname1}")]
-        public async Task<HttpResponseMessage> GetBySurname1(HttpRequestMessage request, string surname1)
-        {
-            var contact = await _contactService.FindContactBySurname1(surname1);
-            if (contact == null)
-            {
-                return request.CreateResponse(HttpStatusCode.NotFound, contact);
-            }
-
-            return request.CreateResponse(HttpStatusCode.OK, contact);
-        }
-        [HttpGet]
-        [Route("api/Contact/{company}")]
-        public async Task<HttpResponseMessage> GetByCompany(HttpRequestMessage request, string company)
-        {
-            var contact = await _contactService.FindContactByCompany(company);
-            if (contact == null)
-            {
-                return request.CreateResponse(HttpStatusCode.NotFound, contact);
-            }
-
-            return request.CreateResponse(HttpStatusCode.OK, contact);
-        }
-    
-
-
-
+       
         [HttpGet]
         [Route("api/Contact/All")]
         public async Task<IHttpActionResult> GetAllContacts()
@@ -123,8 +81,7 @@ namespace ContactBook.Controllers
             return Ok(contacts.ToList());
         }
 
-
-        
+     
         [HttpPost]
         [Route("api/Contact")]
         public IHttpActionResult AddContact(Contact contact)
@@ -134,7 +91,7 @@ namespace ContactBook.Controllers
                 return BadRequest();
             }
 
-            var result = _contactService.AddContact(contact);
+            var result = _contactService.AddContactService(contact);
             if (!result.Succeeded) 
             {
                 return Conflict();
@@ -222,9 +179,7 @@ namespace ContactBook.Controllers
                 }
                 updContact.Id = result.Id;
                 return Created(string.Empty, updContact);
-            }
-            
-            
+            }                      
 
         }
 
@@ -337,7 +292,6 @@ namespace ContactBook.Controllers
                 }
 
                 responseReader.Close();
-
             }
             return isValid;             
         }
@@ -345,32 +299,31 @@ namespace ContactBook.Controllers
 
         private JsonAdressResponseModel DeserializeJson(string response)//
         {
-            
 
-                var obj = JsonConvert.DeserializeObject<RootObject>(response);
-                List<JsonAdressResponseModel> result = obj.results.Select(x => new JsonAdressResponseModel
-                {
-                    address_Components = x.address_components,
-                    Status = obj.status,
-                    lat = x.geometry.location.lat,
-                    lng = x.geometry.location.lng,
-                    postal_Code = x.address_components[5].long_name
-                }).ToList();
-                if (result.Count == 0)
-                    return new JsonAdressResponseModel()
-                    {
-                        Status = obj.status
-                    };
+
+            var obj = JsonConvert.DeserializeObject<RootObject>(response);
+            List<JsonAdressResponseModel> result = obj.results.Select(x => new JsonAdressResponseModel
+            {
+                address_Components = x.address_components,
+                Status = obj.status,
+                lat = x.geometry.location.lat,
+                lng = x.geometry.location.lng,
+                postal_Code = x.address_components[5].long_name
+            }).ToList();
+            if (result.Count == 0)
                 return new JsonAdressResponseModel()
                 {
-                    address_Components = result[0].address_Components,
-                    Status = obj.status,
-                    lat = result[0].lat,
-                    lng = result[0].lng,
-                    postal_Code = result[0].address_Components[5].long_name,
-
+                    Status = obj.status
                 };
-            
+            return new JsonAdressResponseModel()
+            {
+                address_Components = result[0].address_Components,
+                Status = obj.status,
+                lat = result[0].lat,
+                lng = result[0].lng,
+                postal_Code = result[0].address_Components[5].long_name,
+
+            };
         }
 
         public bool IsValidPhone(PhoneNumbers phoneNumber)
@@ -410,7 +363,6 @@ namespace ContactBook.Controllers
             {
                 isValid = false;
             }
-
 
             return isValid;
         }
@@ -486,11 +438,6 @@ namespace ContactBook.Controllers
         {
             await _contactService.DeleteAllContacts();
             return true;
-        }
-
-
-  
-
-        
+        }      
     }
 }

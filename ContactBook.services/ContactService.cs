@@ -1,9 +1,7 @@
 ﻿using ContactBook.Data;
 using ContactBook.Models;
-using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -47,7 +45,7 @@ namespace ContactBook
             }
         }
 
-        public async Task<PhoneNumbers> FindContactByPhone(int phoneNumberID)
+        public async Task<PhoneNumbers> FindPhoneByPhoneID(int phoneNumberID)
         {
 
             using (var context = new ContactBookContext())
@@ -58,7 +56,7 @@ namespace ContactBook
             }
         }
 
-        public async Task<Addresses> FindContactByAddress(int addressID)
+        public async Task<Addresses> FindAddressByAddressID(int addressID)
         {
 
             using (var context = new ContactBookContext())
@@ -80,32 +78,8 @@ namespace ContactBook
             }
         }
 
-      
 
-        public async Task<Contact> FindContactBySurname1(string surname1)
-        {
-
-            using (var context = new ContactBookContext())
-            {
-                var contact = await context.Contacts.Include(f => f.Addresses).Include(f => f.PhoneNumbers).Include(f => f.Emails).SingleOrDefaultAsync(x => x.Surname1 == surname1);
-
-                return contact;
-            }
-        }
-
-        public async Task<Contact> FindContactByCompany(string company)
-        {
-
-            using (var context = new ContactBookContext())
-            {
-                var contact = await context.Contacts.Include(f => f.Addresses).Include(f => f.PhoneNumbers).Include(f => f.Emails).SingleOrDefaultAsync(x => x.Company == company);
-
-                return contact;
-            }
-        }
-
-
-        public ServiceResult AddContact(Contact contact)
+        public ServiceResult AddContactService(Contact contact)
         {
             using (var context = new ContactBookContext())
             {
@@ -285,7 +259,6 @@ namespace ContactBook
                     return false;
                 }
     
-
             }
         }
 
@@ -307,7 +280,6 @@ namespace ContactBook
                 {
                     return false;
                 }
-
 
             }
         }
@@ -332,7 +304,6 @@ namespace ContactBook
                     return false;
                 }
 
-
             }
         }
 
@@ -355,11 +326,8 @@ namespace ContactBook
                     return false;
                 }
 
-
             }
         }
-
-
 
 
         public async Task DeleteAllContacts()
@@ -370,12 +338,6 @@ namespace ContactBook
                 await context.SaveChangesAsync();
             }
         }
-
-
-
-
-
-
 
     }
 }

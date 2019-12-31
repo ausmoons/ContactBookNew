@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace ContactBook.Models
 {
@@ -17,5 +18,10 @@ namespace ContactBook.Models
        
         public int ContactId { get; set; }
         public virtual Contact Contact { get; set; }
+
+        public static implicit operator Emails(string v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

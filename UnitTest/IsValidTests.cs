@@ -1,8 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ContactBook.Models;
 using Xunit;
-using System.Collections.Generic;
-using ContactBook.Data;
 
 namespace ContactBook.Controllers.Tests
 {
@@ -11,29 +9,40 @@ namespace ContactBook.Controllers.Tests
     {
         [TestMethod()]
         [Fact]
+        public void IsValidContact_ShouldWork()
+        {
+
+            var controller = new ContactController();
+            Contact contact = new Contact();
+            contact.Name1 = "Jana";
+            contact.Surname1 = "Saulite";
+            var expected = controller.IsValid(contact);
+            Assert.IsTrue(expected == true);
+        }
+
+        [TestMethod()]
+        [Fact]
+        public void IsValidContact_ShouldNotWork()
+        {
+
+            var controller = new ContactController();
+            Contact contact = new Contact();
+            contact.Name2 = "Dita";
+            var expected = controller.IsValid(contact);
+            Assert.IsTrue(expected == false);
+
+        }
+
+        [TestMethod()]
+        [Fact]
         public void IsValidEmail_ShouldWork()
         {
 
             var controller = new ContactController();
-
-            Emails emailExample1 = new Emails();
-            Emails emailExample2 = new Emails();
-
-
-            emailExample1.EmailAddress = "rightExample@example.com";
-            emailExample2.EmailAddress = "me@me.lv";
-
-            List<Emails> newEmailList = new List<Emails>();
-
-            newEmailList.Add(emailExample1);
-            newEmailList.Add(emailExample2);
-
-
-            var expected = controller.IsValidEmail(newEmailList);
-
+            Emails email = new Emails();
+            email.EmailAddress = "rightExample@example.com";
+            var expected = controller.IsValidEmail(email);
             Assert.IsTrue(expected == true);
-
-
         }
 
         [TestMethod()]
@@ -42,22 +51,9 @@ namespace ContactBook.Controllers.Tests
         {
 
             var controller = new ContactController();
-
-            Emails emailExample1 = new Emails();
-            Emails emailExample2 = new Emails();
-
-
-            emailExample1.EmailAddress = "rightExampleexample.com";
-            emailExample2.EmailAddress = "me@melv";
-
-            List<Emails> newEmailList = new List<Emails>();
-
-            newEmailList.Add(emailExample1);
-            newEmailList.Add(emailExample2);
-
-
-            var expected = controller.IsValidEmail(newEmailList);
-
+            Emails email = new Emails();
+            email.EmailAddress = "rightExampleexample.com";
+            var expected = controller.IsValidEmail(email);
             Assert.IsTrue(expected == false);
 
         }
@@ -95,8 +91,16 @@ namespace ContactBook.Controllers.Tests
         [Fact]
         public void IsValidAddress_ShouldWork()
         {
+            var controller = new ContactController();
 
+            Addresses address = new Addresses();
+            address.City = "Riga";
+            address.Street = "Prusu";
+            address.HouseNumber = "19";
+            address.PostalCode = "LV-1057";
+            var expected = controller.IsValidAddress(address);
 
+            Assert.IsTrue(expected == true);
 
         }
 
@@ -104,8 +108,16 @@ namespace ContactBook.Controllers.Tests
         [Fact]
         public void IsValidAddress_ShouldNotWork()
         {
+            var controller = new ContactController();
 
+            Addresses address = new Addresses();
+            address.City = "Riga";
+            address.Street = "Prusu";
+            address.HouseNumber = "19";
+            address.PostalCode = "LV-0000";
+            var expected = controller.IsValidAddress(address);
 
+            Assert.IsTrue(expected == false);
 
         }
 
@@ -114,21 +126,11 @@ namespace ContactBook.Controllers.Tests
         public void IsValidPhone_ShouldWork()
         {
             var controller = new ContactController();
-
             PhoneNumbers phoneExample = new PhoneNumbers();
-
             phoneExample.PhoneNumber = "27438542";
-
-
-            List<PhoneNumbers> newPhoneList = new List<PhoneNumbers>();
-
-            newPhoneList.Add(phoneExample);
-           
-
-            var expected = controller.IsValidPhone(newPhoneList);
+            var expected = controller.IsValidPhone(phoneExample);
 
             Assert.IsTrue(expected == true);
-
 
         }
 
@@ -148,122 +150,15 @@ namespace ContactBook.Controllers.Tests
             phoneExample3.PhoneNumber = "77438542";
             phoneExample4.PhoneNumber = "274f852";
 
-
-            List<PhoneNumbers> newPhoneList = new List<PhoneNumbers>();
-
-            newPhoneList.Add(phoneExample1);
-            newPhoneList.Add(phoneExample2);
-            newPhoneList.Add(phoneExample3);
-            newPhoneList.Add(phoneExample4);
-
-
-            var expected = controller.IsValidPhone(newPhoneList);
-
-            Assert.IsTrue(expected == false);
-
-
+            var expected1 = controller.IsValidPhone(phoneExample1);
+            Assert.IsTrue(expected1 == false);
+            var expected2 = controller.IsValidPhone(phoneExample2);
+            Assert.IsTrue(expected2 == false);
+            var expected3 = controller.IsValidPhone(phoneExample3);
+            Assert.IsTrue(expected3 == false);
+            var expected4 = controller.IsValidPhone(phoneExample4);
+            Assert.IsTrue(expected4 == false);
         }
-
-        [TestMethod()]
-        [Fact]
-        public void IsValidPhone1_ShouldNotWork()
-        {
-            var controller = new ContactController();
-
-            PhoneNumbers phoneExample1 = new PhoneNumbers();
-            
-
-            phoneExample1.PhoneNumber = "2743852";
-           
-
-
-            List<PhoneNumbers> newPhoneList = new List<PhoneNumbers>();
-
-            newPhoneList.Add(phoneExample1);
-           
-
-
-            var expected = controller.IsValidPhone(newPhoneList);
-
-            Assert.IsTrue(expected == false);
-
-
-        }
-
-        [TestMethod()]
-        [Fact]
-        public void IsValidPhone2_ShouldNotWork()
-        {
-            var controller = new ContactController();
-
-           
-            PhoneNumbers phoneExample2 = new PhoneNumbers();
-            
-            phoneExample2.PhoneNumber = "27l38542";
-            
-
-            List<PhoneNumbers> newPhoneList = new List<PhoneNumbers>();
-
-           
-            newPhoneList.Add(phoneExample2);
-            
-
-
-            var expected = controller.IsValidPhone(newPhoneList);
-
-            Assert.IsTrue(expected == false);
-
-        }
-
-        [TestMethod()]
-        [Fact]
-        public void IsValidPhone3_ShouldNotWork()
-        {
-            var controller = new ContactController();
-
-            
-            PhoneNumbers phoneExample3 = new PhoneNumbers();
-           
-            phoneExample3.PhoneNumber = "77438542";
-            
-
-
-            List<PhoneNumbers> newPhoneList = new List<PhoneNumbers>();
-
-           
-            newPhoneList.Add(phoneExample3);
-            
-
-            var expected = controller.IsValidPhone(newPhoneList);
-
-            Assert.IsTrue(expected == false);
-
-
-        }
-        [TestMethod()]
-        [Fact]
-        public void IsValidPhone4_ShouldNotWork()
-        {
-            var controller = new ContactController();
-
-     
-            PhoneNumbers phoneExample4 = new PhoneNumbers();
-
-            phoneExample4.PhoneNumber = "274f852";
-
-
-            List<PhoneNumbers> newPhoneList = new List<PhoneNumbers>();
-
-
-            newPhoneList.Add(phoneExample4);
-
-
-            var expected = controller.IsValidPhone(newPhoneList);
-
-            Assert.IsTrue(expected == false);
-
-
-        }
-
+        
     }
 }

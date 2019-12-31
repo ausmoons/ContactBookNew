@@ -1,150 +1,195 @@
 <template>
   <div class="add container">
     <h1 class="page-header">Add Contact</h1>
-    <form @submit="formSubmit">
-        <div class="well">
-            <h4>Contact Info</h4>
-            <div class="form-group">
-                <label>First Name</label>
-                <input type="text" class="form-control" placeholder="name1" v-model="name1">
-            </div>
-            <div class="form-group">
-                <label>Last Name</label>
-                <input type="text" class="form-control" placeholder="surname1" v-model="surname1">
-            </div>
-        </div>
 
+    <div class="well">
+      <h4>Contact Info</h4>
+      <div class="form-group">
+        <label>First Name</label>
+        <input type="text" class="form-control" placeholder="name1" v-model="name1" />
+      </div>
+      <div class="form-group">
+        <label>Last Name</label>
+        <input type="text" class="form-control" placeholder="surname1" v-model="surname1" />
+      </div>
+    </div>
 
-        <div class="well">
-            <h4>Contact info</h4>
-            <div class="form-group">
-                <label>Email</label>
-                <input type="text" class="form-control" placeholder="emailAddress" v-model="emails.emailAddress">
-            </div>
-            <div class="form-group">
-                <label>Email type</label>
-                <input type="text" class="form-control" placeholder="emailType" v-model="emails.type">
-            </div>
-            <div class="form-group">
-                <label>Phone</label>
-                <input type="text" class="form-control" placeholder="phoneNumbers" v-model="phoneNumbers.phoneNumber">
-            </div>
-            <div class="form-group">
-                <label>Phonenumber type</label>
-                <input type="text" class="form-control" placeholder="phoneNumbersType" v-model="phoneNumbers.type">
-            </div>
-        </div>
+    <div class="well">
+      <h4>Contact info</h4>
+      <div class="form-group">
+        <label>Email</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="emailAddress"
+          v-model="emails.emailAddress"
+        />
+      </div>
+      <div class="form-group">
+        <label>Email type</label>
+        <input type="text" class="form-control" placeholder="emailType" v-model="emails.type" />
+      </div>
+      <div class="form-group">
+        <label>Phone</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="phoneNumbers"
+          v-model="phoneNumbers.phoneNumber"
+        />
+      </div>
+      <div class="form-group">
+        <label>Phonenumber type</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="phoneNumbersType"
+          v-model="phoneNumbers.type"
+        />
+      </div>
+    </div>
 
-        <div class="well">
-            <h4>Address</h4>
-            <div class="form-group">
-                <label>City</label>
-                <input type="text" class="form-control" placeholder="city" v-model="addresses.city">
-            </div>
-            <div class="form-group">
-                <label>Street</label>
-                <input type="text" class="form-control" placeholder="street" v-model="addresses.street">
-            </div>
-            <div class="form-group">
-                <label>House number</label>
-                <input type="text" class="form-control" placeholder="houseNumber" v-model="addresses.houseNumber">
-            </div>
-            <div class="form-group">
-                <label>Postal code</label>
-                <input type="text" class="form-control" placeholder="postalCode" v-model="addresses.postalCode">
-            </div>
-        </div> 
-        
-<md-dialog-alert
+    <div class="well">
+      <h4>Address</h4>
+      <div class="form-group">
+        <label>City</label>
+        <input type="text" class="form-control" placeholder="city" v-model="addresses.city" />
+      </div>
+      <div class="form-group">
+        <label>Street</label>
+        <input type="text" class="form-control" placeholder="street" v-model="addresses.street" />
+      </div>
+      <div class="form-group">
+        <label>House number</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="houseNumber"
+          v-model="addresses.houseNumber"
+        />
+      </div>
+      <div class="form-group">
+        <label>Postal code</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="postalCode"
+          v-model="addresses.postalCode"
+        />
+      </div>
+    </div>
+
+    <md-dialog-alert
       :md-active.sync="saved"
       md-content="Your contact has been saved!"
-      md-confirm-text="Ok" />
+      md-confirm-text="Ok"
+    />
 
-      <md-dialog-alert
+    <md-dialog-alert
       :md-active.sync="cancel"
       md-content="Your contact has not been saved!"
-      md-confirm-text="Ok" />
+      md-confirm-text="Ok"
+    />
 
+    <md-dialog-alert
+      :md-active.sync="notSaved"
+      md-content="Your contact has not been saved!"
+      md-confirm-text="Ok"
+    />
 
-
-<md-card-actions>
-        <md-button v-on:click="cancel = true" ><router-link class="btn btn-primary" v-bind:to="'/'">Cancel</router-link></md-button>
-         <md-button type="submit" v-on:click="saved = true" class="btn btn-primary">Add</md-button>
-</md-card-actions>
-
-
-
-
-       
-    </form>
+    <md-card-actions>
+      <md-button v-on:click="goBack">Cancel</md-button>
+      <md-button v-on:click="add" class="btn btn-primary">Add</md-button>
+    </md-card-actions>
   </div>
 </template>
 
 <script>
+import axios from "axios";
+import router from "../router";
 
-    import axios from 'axios';
-
-    export default {
-          mounted() {
-              console.log('Component mounted.')
-          },
-          data() {
-              return {
-                saved: false,
-                cancel: false,
-                name1: '',
-                surname1: '',
-                addresses: [{
-                city : '',
-                street: '',
-                houseNumber: '',
-                postalCode: '',
-                }], 
-            phoneNumbers: [{
-                phoneNumber: '',
-                type: '',
-                 }], 
-            emails: [{
-                emailAddress:'',
-                type: '',
-                }],
-              };
-          },
-    
-      methods: {
-              formSubmit(e) {
-                  e.preventDefault();
-                  let currentObj = this;
-                  axios.post('https://localhost:44366/api/Contact', {
-                      name1: this.name1,
-                      surname1: this.surname1,
-                      addresses: [{
-                        city : this.addresses.city,
-                        street: this.addresses.street,
-                        houseNumber: this.addresses.houseNumber,
-                        postalCode: this.addresses.postalCode,
-                      }], 
-                    phoneNumbers: [{
-                        phoneNumber: this.phoneNumbers.phoneNumber,
-                        type: this.phoneNumbers.type,
-                      }], 
-                     emails: [{
-                        emailAddress: this.emails.emailAddress,
-                        type: this.emails.type,
-                      }], 
-
-                  })
-                  .then(function (response) {
-                      currentObj.output = response.data;
-                      console.log(response.message);
-                  });
-                  
-              }
-          }
-      }
+export default {
+  mounted() {
+    console.log("Component mounted.");
+  },
+  data() {
+    return {
+      saved: false,
+      cancel: false,
+      notSaved: false,
+      name1: "",
+      surname1: "",
+      addresses: [
+        {
+          city: "",
+          street: "",
+          houseNumber: "",
+          postalCode: ""
+        }
+      ],
+      phoneNumbers: [
+        {
+          phoneNumber: "",
+          type: ""
+        }
+      ],
+      emails: [
+        {
+          emailAddress: "",
+          type: ""
+        }
+      ]
+    };
+  },
+  methods: {
+    add(e) {
+      e.preventDefault();
+      let currentObj = this;
+      axios
+        .post("https://localhost:44366/api/Contact", {
+          name1: this.name1,
+          surname1: this.surname1,
+          addresses: [
+            {
+              city: this.addresses.city,
+              street: this.addresses.street,
+              houseNumber: this.addresses.houseNumber,
+              postalCode: this.addresses.postalCode
+            }
+          ],
+          phoneNumbers: [
+            {
+              phoneNumber: this.phoneNumbers.phoneNumber,
+              type: this.phoneNumbers.type
+            }
+          ],
+          emails: [
+            {
+              emailAddress: this.emails.emailAddress,
+              type: this.emails.type
+            }
+          ]
+        })
+        .then(function(response) {
+          currentObj.output = response.data;
+          console.log(response.message);
+        })
+        .catch(error => {
+          console.warn("The contact was not saved");
+          this.notSaved = true;
+        });
+      this.saved = true;
+      setTimeout(() => this.$router.push("/"), 2000);
+    },
+    goBack(e) {
+      e.preventDefault();
+      this.cancel = true;
+      setTimeout(() => this.$router.push("/"), 2000);
+    }
+  }
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
 </style>
